@@ -1,8 +1,8 @@
-# Bitcoin Bech32 TX Ref javascript library
+# Bech32 TX Ref encoding and decoding javascript library
 
 ## About
 
-Javascript library for Bech32 Encoded TX References, ported from Jonas Schnelli's [reference implementation](https://github.com/jonasschnelli/bitcoin_txref_code) for the BTCR Hackathon. It uses Peter Wuille's [Bech32 library](https://github.com/sipa/bech32) for Bech32 encoding and decoding.
+Javascript library for Bech32 Encoded TX References, ported from Jonas Schnelli's [reference implementation](https://github.com/jonasschnelli/bitcoin_txref_code) for the Rebooting Web Of Trust's [BTCR Hackathon](https://github.com/WebOfTrustInfo/btcr-hackathon). It uses Peter Wuille's [Bech32 library](https://github.com/sipa/bech32) for Bech32 encoding and decoding.
 
 See the current draft of the [Bech32 Encoded Transaction Position References](https://github.com/veleslavs/bips/blob/c83837536d6629f754ce5a88bbe245e0a615e76e/bip-XXXX-Bech32_Encoded_Transaction_Position_References.mediawiki) BIP. 
 
