@@ -26,6 +26,11 @@ This library is for prototype use only. Some future improvements would include:
 
 You can use this as a node package or in a browser. The browserified script is available as `btcr_converter.js`.
 
+## Preview
+
+You can experiment with this library in the [BTCR TX Playground](https://weboftrustinfo.github.io/btcr-tx-playground.github.io/)
+
+
 ## Examples
 
 In these examples, note the following:
@@ -122,7 +127,7 @@ npm install
 The following shows how you can use it: 
 
 ```
-<script src="./btcr_converter.js"></script>
+<script src="./btcr_converter-browserified.js"></script>
 
 BtcrUtils.txidToBech32(txid, chain)
   .then(function (result, err) {
@@ -131,8 +136,6 @@ BtcrUtils.txidToBech32(txid, chain)
 ```
 
 See the BTCR playground code repository [btcr-tx-playground](https://github.com/WebOfTrustInfo/btcr-tx-playground.github.io) for working code samples. 
-
-You can also experiment with this library in the [BTCR TX Playground](https://weboftrustinfo.github.io/btcr-tx-playground.github.io/)
 
 ## Running tests
 
