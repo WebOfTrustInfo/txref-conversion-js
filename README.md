@@ -1,4 +1,4 @@
-# Bitcoin Bech32 TX Ref javascript library
+# Bech32 TX Ref encoding and decoding javascript library
 
 ## About
 
