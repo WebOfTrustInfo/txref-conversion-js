@@ -1,4 +1,4 @@
-# Bech32 TX Ref encoding and decoding javascript library
+# TX Ref conversion javascript library
 
 ## About
 
@@ -37,12 +37,12 @@ In these examples, note the following:
 - Prefixes: mainnet tx refs start with the `tx1` prefix, whereas testnet tx refs start with "txtest1"
 - Length: ignoring the prefixes, testnet refs are 2 characters longer than mainnet
 
-### Encoding a TXID as Bech32-encoded TX ref
+### Convert a TXID to a TX ref
 
 ```
 let txrefConverter = require('./txrefConverter');
 
-txrefConverter.txidToBech32("016b71d9ec62709656504f1282bb81f7acf998df025e54bd68ea33129d8a425b", 
+txrefConverter.txidToTxref("016b71d9ec62709656504f1282bb81f7acf998df025e54bd68ea33129d8a425b", 
     txrefConverter.CHAIN_MAINNET)
   .then(result => {
     console.log(result); // expect "tx1-rk63-uvxf-9pqc-sy"
@@ -50,12 +50,12 @@ txrefConverter.txidToBech32("016b71d9ec62709656504f1282bb81f7acf998df025e54bd68e
   
 ```
 
-### From a Bech32-encoded TX ref, locate the TXID
+### Convert a TX ref to a TXID
 
 ```
 let txrefConverter = require('./txrefConverter');
 
-txrefConverter.bech32ToTxid("txtest1-xyv2-xzyq-qqm5-tyke")
+txrefConverter.txrefToTxid("txtest1-xyv2-xzyq-qqm5-tyke")
   .then(result => {
     console.log(result); // expect "f8cdaff3ebd9e862ed5885f8975489090595abe1470397f79780ead1c7528107"
   });
@@ -64,14 +64,14 @@ txrefConverter.bech32ToTxid("txtest1-xyv2-xzyq-qqm5-tyke")
 
 ### Finer grained functions 
 
-#### Given the chain, block height and position, encode as a Bech32 TX ref
+#### Given the chain, block height and position, encode as a TX ref
 
 Mainnet:
 
 ```
 let txrefConverter = require('./txrefConverter');
 
-let result = txrefConverter.txRefDecode('tx1-rzqq-qqqq-uvlj-ez');
+let result = txrefConverter.txrefDecode('tx1-rzqq-qqqq-uvlj-ez');
 console.log(result.blockHeight); // expect 1
 console.log(result.blockIndex);  // expect 0
 console.log(result.chain);       // expect "mainnet"
@@ -83,16 +83,16 @@ Testnet:
 ```
 let txrefConverter = require('./txrefConverter');
 
-let result = txrefConverter.txRefEncode("testnet", 1152194, 1);
+let result = txrefConverter.txrefEncode("testnet", 1152194, 1);
 console.log(result); // expect "txtest1-xyv2-xzyq-qqm5-tyke"
 ```
 
-#### Given Bech32 TX ref, extract the chain, block height and position
+#### Given a TX ref, extract the chain, block height and position
 
 ```
 let txrefConverter = require('./txrefConverter');
 
-let result = txrefConverter.txRefEncode("mainnet", 0, 0);
+let result = txrefConverter.txrefEncode("mainnet", 0, 0);
 console.log(result); // expect "tx1-rqqq-qqqq-qmhu-qk"
 ```
 
@@ -106,7 +106,7 @@ let txrefConverter = require('./txrefConverter');
 getTxDetails("f8cdaff3ebd9e862ed5885f8975489090595abe1470397f79780ead1c7528107", "testnet")
     .then(data => {
       console.log(data.numConfirmations); // and other transaction data obtained from the explorer
-      var result = txRefEncode(chain, data.blockHeight, data.blockIndex);
+      var result = txrefEncode(chain, data.blockHeight, data.blockIndex);
       return result
     }, error => {
       console.error(error);
@@ -129,7 +129,7 @@ The following shows how you can use it:
 ```
 <script src="./btcr_converter-browserified.js"></script>
 
-BtcrUtils.txidToBech32(txid, chain)
+BtcrUtils.txidToTxref(txid, chain)
   .then(function (result, err) {
       // populate widget with result
 });

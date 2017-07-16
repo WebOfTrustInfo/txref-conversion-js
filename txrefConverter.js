@@ -34,7 +34,7 @@ let request = obj => {
 };
 
 
-var txRefEncode = function (chain, blockHeight, txPos) {
+var txrefEncode = function (chain, blockHeight, txPos) {
   let magic = chain === CHAIN_MAINNET ? MAGIC_BTC_MAINNET : MAGIC_BTC_TESTNET;
   let prefix = chain === CHAIN_MAINNET ? TXREF_BECH32_HRP_MAINNET : TXREF_BECH32_HRP_TESTNET;
   let nonStandard = chain != CHAIN_MAINNET;
@@ -93,7 +93,7 @@ var txRefEncode = function (chain, blockHeight, txPos) {
 };
 
 
-var txRefDecode = function (bech32Tx) {
+var txrefDecode = function (bech32Tx) {
   let stripped = bech32Tx.replace(/-/g, '');
 
   let result = bech32.decode(stripped);
@@ -178,10 +178,10 @@ function getTxDetails(txId, chain) {
 }
 
 
-var txidToBech32 = function (txId, chain) {
+var txidToTxref = function (txId, chain) {
   return getTxDetails(txId, chain)
     .then(data => {
-      var result = txRefEncode(chain, data.blockHeight, data.blockIndex);
+      var result = txrefEncode(chain, data.blockHeight, data.blockIndex);
       return result
     }, error => {
       console.error(error);
@@ -190,13 +190,13 @@ var txidToBech32 = function (txId, chain) {
 }
 
 
-var bech32ToTxid = function (bech32Tx) {
+var txrefToTxid = function (txref) {
 
   return new Promise((resolve, reject) => {
 
-    let blockLocation = txRefDecode(bech32Tx);
+    let blockLocation = txrefDecode(txref);
     if (blockLocation === null) {
-      reject(new Error("Could not decode txref " + bech32Tx));
+      reject(new Error("Could not decode txref " + txref));
     }
 
     let blockHeight = blockLocation.blockHeight;
@@ -222,10 +222,10 @@ var bech32ToTxid = function (bech32Tx) {
 
 
 module.exports = {
-  txRefDecode: txRefDecode,
-  txRefEncode: txRefEncode,
-  txidToBech32: txidToBech32,
-  bech32ToTxid: bech32ToTxid,
+  txrefDecode: txrefDecode,
+  txrefEncode: txrefEncode,
+  txidToTxref: txidToTxref,
+  txrefToTxid: txrefToTxid,
   getTxDetails: getTxDetails,
   MAGIC_BTC_MAINNET: MAGIC_BTC_MAINNET,
   MAGIC_BTC_TESTNET: MAGIC_BTC_TESTNET,
@@ -241,7 +241,7 @@ module.exports = {
  )*/
 
 /*
-bech32ToTxid("tx1-rk63-uvxf-9pqc-sy")
+txrefToTxid("tx1-rk63-uvxf-9pqc-sy")
   .then(result => {
     console.log(result);
   }, error => {

@@ -8296,7 +8296,7 @@ var request = function request(obj) {
   });
 };
 
-var txRefEncode = function txRefEncode(chain, blockHeight, txPos) {
+var txrefEncode = function txrefEncode(chain, blockHeight, txPos) {
   var magic = chain === CHAIN_MAINNET ? MAGIC_BTC_MAINNET : MAGIC_BTC_TESTNET;
   var prefix = chain === CHAIN_MAINNET ? TXREF_BECH32_HRP_MAINNET : TXREF_BECH32_HRP_TESTNET;
   var nonStandard = chain != CHAIN_MAINNET;
@@ -8345,7 +8345,7 @@ var txRefEncode = function txRefEncode(chain, blockHeight, txPos) {
   return finalResult;
 };
 
-var txRefDecode = function txRefDecode(bech32Tx) {
+var txrefDecode = function txrefDecode(bech32Tx) {
   var stripped = bech32Tx.replace(/-/g, '');
 
   var result = bech32.decode(stripped);
@@ -8424,9 +8424,9 @@ function getTxDetails(txId, chain) {
   });
 }
 
-var txidToBech32 = function txidToBech32(txId, chain) {
+var txidToTxref = function txidToTxref(txId, chain) {
   return getTxDetails(txId, chain).then(function (data) {
-    var result = txRefEncode(chain, data.blockHeight, data.blockIndex);
+    var result = txrefEncode(chain, data.blockHeight, data.blockIndex);
     return result;
   }, function (error) {
     console.error(error);
@@ -8434,13 +8434,13 @@ var txidToBech32 = function txidToBech32(txId, chain) {
   });
 };
 
-var bech32ToTxid = function bech32ToTxid(bech32Tx) {
+var txrefToTxid = function txrefToTxid(txref) {
 
   return new Promise(function (resolve, reject) {
 
-    var blockLocation = txRefDecode(bech32Tx);
+    var blockLocation = txrefDecode(txref);
     if (blockLocation === null) {
-      reject(new Error("Could not decode txref " + bech32Tx));
+      reject(new Error("Could not decode txref " + txref));
     }
 
     var blockHeight = blockLocation.blockHeight;
@@ -8464,10 +8464,10 @@ var bech32ToTxid = function bech32ToTxid(bech32Tx) {
 };
 
 module.exports = {
-  txRefDecode: txRefDecode,
-  txRefEncode: txRefEncode,
-  txidToBech32: txidToBech32,
-  bech32ToTxid: bech32ToTxid,
+  txrefDecode: txrefDecode,
+  txrefEncode: txrefEncode,
+  txidToTxref: txidToTxref,
+  txrefToTxid: txrefToTxid,
   getTxDetails: getTxDetails,
   MAGIC_BTC_MAINNET: MAGIC_BTC_MAINNET,
   MAGIC_BTC_TESTNET: MAGIC_BTC_TESTNET,
@@ -8483,7 +8483,7 @@ module.exports = {
  )*/
 
 /*
-bech32ToTxid("tx1-rk63-uvxf-9pqc-sy")
+txrefToTxid("tx1-rk63-uvxf-9pqc-sy")
   .then(result => {
     console.log(result);
   }, error => {
