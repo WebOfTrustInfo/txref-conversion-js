@@ -1,6 +1,8 @@
 'use strict';
 
+let assert = require('chai').assert;
 let expect = require('chai').expect;
+
 let txrefConverter = require('./txrefConverter');
 
 
@@ -265,7 +267,7 @@ describe('Bech32 TX', function () {
             done();
           }, error => {
             console.error(error);
-            done(err);
+            done();
           });
       });
     }, 5000);
@@ -278,7 +280,7 @@ describe('Bech32 TX', function () {
             done();
           }, error => {
             console.error(error);
-            done(err);
+            done();
           });
       });
     }, 5000);
@@ -291,7 +293,7 @@ describe('Bech32 TX', function () {
             done();
           }, error => {
             console.error(error);
-            done(err);
+            done();
           });
       });
     }, 5000);
@@ -304,7 +306,34 @@ describe('Bech32 TX', function () {
             done();
           }, error => {
             console.error(error);
-            done(err);
+            done();
+          });
+      });
+    }, 5000);
+
+    it('tx not found (mainnet)', function (done) {
+      setTimeout(function () {
+        txrefConverter.txidToBech32("f8cdaff3ebd9e862ed5885f8975489090595abe1470397f79780ead1c7528107", "mainnet")
+          .then(result => {
+            assert.fail();
+            done();
+          }, error => {
+            assert.isOk(error);
+            done();
+          });
+      });
+    }, 5000);
+
+
+    it('could not convert to txid (mainnet)', function (done) {
+      setTimeout(function () {
+        txrefConverter.bech32ToTxid("tx1-rk63-uvxf-9pqc-sr", "mainnet")
+          .then(result => {
+            assert.fail();
+            done();
+          }, error => {
+            assert.isOk(error);
+            done();
           });
       });
     }, 5000);

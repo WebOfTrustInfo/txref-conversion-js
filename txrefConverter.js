@@ -19,12 +19,12 @@ let request = obj => {
       if (request.status >= 200 && request.status < 300) {
         resolve(request.responseText);
       } else {
-        reject(request.statusText);
+        reject(new Error(request.responseText));
       }
     });
     request.addEventListener('error', () => {
-      console.log(request.status);
-      reject(request.status);
+      console.error(request.status);
+      reject(new Error(request.status));
     });
 
     request.open('GET', obj.url);
@@ -97,6 +97,9 @@ var txRefDecode = function (bech32Tx) {
   let stripped = bech32Tx.replace(/-/g, '');
 
   let result = bech32.decode(stripped);
+  if (result === null) {
+    return null;
+  }
   let buf = result.data;
 
 
@@ -170,6 +173,7 @@ function getTxDetails(txId, chain) {
       };
     }, error => {
       console.error(error);
+      throw error;
     });
 }
 
@@ -181,25 +185,30 @@ var txidToBech32 = function (txId, chain) {
       return result
     }, error => {
       console.error(error);
+      throw error;
     });
 }
 
 
 var bech32ToTxid = function (bech32Tx) {
 
-  blockLocation = txRefDecode(bech32Tx);
-
-  let blockHeight = blockLocation.blockHeight;
-  let blockIndex = blockLocation.blockIndex;
-  let chain = blockLocation.chain;
-  var theUrl;
-  if (chain === CHAIN_MAINNET) {
-    theUrl = `https://api.blockcypher.com/v1/btc/main/blocks/${blockHeight}?txstart=${blockIndex}&limit=1`;
-  } else {
-    theUrl = `https://api.blockcypher.com/v1/btc/test3/blocks/${blockHeight}?txstart=${blockIndex}&limit=1`;
-  }
-
   return new Promise((resolve, reject) => {
+
+    let blockLocation = txRefDecode(bech32Tx);
+    if (blockLocation === null) {
+      reject(new Error("Could not decode txref " + bech32Tx));
+    }
+
+    let blockHeight = blockLocation.blockHeight;
+    let blockIndex = blockLocation.blockIndex;
+    let chain = blockLocation.chain;
+    var theUrl;
+    if (chain === CHAIN_MAINNET) {
+      theUrl = `https://api.blockcypher.com/v1/btc/main/blocks/${blockHeight}?txstart=${blockIndex}&limit=1`;
+    } else {
+      theUrl = `https://api.blockcypher.com/v1/btc/test3/blocks/${blockHeight}?txstart=${blockIndex}&limit=1`;
+    }
+
     request({url: theUrl})
       .then(data => {
         let txData = JSON.parse(data);
@@ -229,4 +238,12 @@ module.exports = {
  getTxDetails("f8cdaff3ebd9e862ed5885f8975489090595abe1470397f79780ead1c7528107", "testnet").then( result => {
  console.log(result);
  }
- )*/
+ )
+
+txidToBech32("f8cdaff3ebd9e862ed5885f8975489090595abe1470397f79780ead1c7528107", "mainnet")
+  .then(result => {
+    console.log(result);
+  }, error => {
+    console.error(error);
+  });
+  */
