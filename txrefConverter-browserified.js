@@ -8397,18 +8397,22 @@ function getTxDetails(txId, chain) {
 
   return request({ url: theUrl }).then(function (data) {
     var txData = JSON.parse(data);
+
+    var blockHash = txData.block_hash;
     var blockHeight = txData.block_height;
     var blockIndex = txData.block_index;
+    var fees = txData.fees;
     var inputs = txData.inputs.map(function (x) {
-      return { "script": x.script, "addresses": x.addresses, "outputValue": x.output_value };
+      return { "script": x.script, "addresses": x.addresses, "outputValue": x.output_value, "previousHash": x.prev_hash };
     });
     var outputs = txData.outputs.map(function (x) {
       if (x.value === 0) {
-        return { "script": x.script, "data": x.data_string };
+        return { "script": x.script, "dataHex": x.data_hex, "dataString": x.data_string, "outputValue": x.value, "scriptType": x.script_type };
       }
-      return { "script": x.script, "addresses": x.addresses, "outputValue": x.value };
+      return { "script": x.script, "addresses": x.addresses, "outputValue": x.value, "scriptType": x.script_type };
     });
     return {
+      "blockHash": blockHash,
       "blockHeight": blockHeight,
       "blockIndex": blockIndex,
       "txReceived": txData.received,
@@ -8416,7 +8420,9 @@ function getTxDetails(txId, chain) {
       "numConfirmations": txData.confirmations,
       "inputs": inputs,
       "outputs": outputs,
-      "chain": chain
+      "chain": chain,
+      "fees": fees,
+      "txHash": txId
     };
   }, function (error) {
     console.error(error);
@@ -8476,11 +8482,10 @@ module.exports = {
   CHAIN_MAINNET: CHAIN_MAINNET,
   CHAIN_TESTNET: CHAIN_TESTNET
 };
-/*
- getTxDetails("f8cdaff3ebd9e862ed5885f8975489090595abe1470397f79780ead1c7528107", "testnet").then( result => {
- console.log(result);
- }
- )*/
+
+getTxDetails("f8cdaff3ebd9e862ed5885f8975489090595abe1470397f79780ead1c7528107", "testnet").then(function (result) {
+  console.log(result);
+});
 
 /*
 txrefToTxid("tx1-rk63-uvxf-9pqc-sy")
