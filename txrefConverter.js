@@ -219,6 +219,7 @@ var txDetailsFromTxid = function (txid, chain) {
   return getTxDetails(txid, chain)
     .then(txDetails => {
       var txref = txrefEncode(chain, txDetails.blockHeight, txDetails.blockIndex);
+      txDetails.txid = txid;
       txDetails.txref = txref;
       txDetails.chain = chain;
       return txDetails;
@@ -236,6 +237,7 @@ var txDetailsFromTxref = function (txref) {
       return getTxDetails(txid, chain)
         .then(txDetails => {
           // add other info
+          txDetails.txid = txid;
           txDetails.txref = txref;
           txDetails.chain = chain;
           return txDetails;
