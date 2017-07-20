@@ -1,5 +1,5 @@
 {
-  "name": "tx_bech_utils",
+  "name": "txref-conversion-js",
   "version": "1.0.0",
   "description": "",
   "main": "txrefConverter.js",
@@ -16,7 +16,7 @@
     "build": "browserify txrefConverter.js --s BtcrUtils -t [ babelify --presets [ es2015 ] ] -o txrefConverter-browserified.js",
     "uglify": "uglifyjs bundle.js --compress --mangle --output txrefConverter.js"
   },
-  "author": "Kim Duffy",
+  "author": "Kim Hamilton Duffy",
   "license": "MIT",
   "devDependencies": {
     "babel-cli": "^6.24.0",

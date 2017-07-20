@@ -1,5 +1,5 @@
-var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 var bech32 = require('./bech32');
+var promisifiedRequests = require('./promisifiedRequests');
 
 let MAGIC_BTC_MAINNET = 0x03;
 let MAGIC_BTC_TESTNET = 0x06;
@@ -10,28 +10,6 @@ let TXREF_BECH32_HRP_TESTNET = "txtest";
 let CHAIN_MAINNET = "mainnet";
 let CHAIN_TESTNET = "testnet";
 
-
-let request = obj => {
-  return new Promise((resolve, reject) => {
-    let request = new XMLHttpRequest();
-
-    request.addEventListener('load', () => {
-      if (request.status >= 200 && request.status < 300) {
-        resolve(request.responseText);
-      } else {
-        reject(new Error(request.responseText));
-      }
-    });
-    request.addEventListener('error', () => {
-      console.error(request.status);
-      reject(new Error(request.status));
-    });
-
-    request.open('GET', obj.url);
-    request.responseType = "json";
-    request.send();
-  });
-};
 
 
 var txrefEncode = function (chain, blockHeight, txPos) {
@@ -147,7 +125,7 @@ function getTxDetails(txId, chain) {
     theUrl = `https://api.blockcypher.com/v1/btc/test3/txs/${txId}?limit=500`;
   }
 
-  return request({url: theUrl})
+  return promisifiedRequests.request({url: theUrl})
     .then(data => {
       let txData = JSON.parse(data);
 
@@ -215,7 +193,7 @@ var txrefToTxid = function (txref) {
       theUrl = `https://api.blockcypher.com/v1/btc/test3/blocks/${blockHeight}?txstart=${blockIndex}&limit=1`;
     }
 
-    request({url: theUrl})
+    promisifiedRequests.request({url: theUrl})
       .then(data => {
         let txData = JSON.parse(data);
         resolve(txData.txids[0]);

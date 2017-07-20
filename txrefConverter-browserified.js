@@ -8260,19 +8260,9 @@ function extend() {
 }
 
 },{}],41:[function(require,module,exports){
-"use strict";
+'use strict';
 
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-var bech32 = require('./bech32');
-
-var MAGIC_BTC_MAINNET = 0x03;
-var MAGIC_BTC_TESTNET = 0x06;
-
-var TXREF_BECH32_HRP_MAINNET = "tx";
-var TXREF_BECH32_HRP_TESTNET = "txtest";
-
-var CHAIN_MAINNET = "mainnet";
-var CHAIN_TESTNET = "testnet";
 
 var request = function request(obj) {
   return new Promise(function (resolve, reject) {
@@ -8290,11 +8280,34 @@ var request = function request(obj) {
       reject(new Error(request.status));
     });
 
-    request.open('GET', obj.url);
+    request.open(obj.method || "GET", obj.url);
     request.responseType = "json";
-    request.send();
+    if (obj.body !== null) {
+      request.send(JSON.stringify(obj.body));
+    } else {
+      request.send();
+    }
   });
 };
+
+module.exports = {
+  request: request
+};
+
+},{"xmlhttprequest":39}],42:[function(require,module,exports){
+'use strict';
+
+var bech32 = require('./bech32');
+var promisifiedRequests = require('./promisifiedRequests');
+
+var MAGIC_BTC_MAINNET = 0x03;
+var MAGIC_BTC_TESTNET = 0x06;
+
+var TXREF_BECH32_HRP_MAINNET = "tx";
+var TXREF_BECH32_HRP_TESTNET = "txtest";
+
+var CHAIN_MAINNET = "mainnet";
+var CHAIN_TESTNET = "testnet";
 
 var txrefEncode = function txrefEncode(chain, blockHeight, txPos) {
   var magic = chain === CHAIN_MAINNET ? MAGIC_BTC_MAINNET : MAGIC_BTC_TESTNET;
@@ -8390,12 +8403,12 @@ function getTxDetails(txId, chain) {
 
   var theUrl;
   if (chain === CHAIN_MAINNET) {
-    theUrl = "https://api.blockcypher.com/v1/btc/main/txs/" + txId + "?limit=500";
+    theUrl = 'https://api.blockcypher.com/v1/btc/main/txs/' + txId + '?limit=500';
   } else {
-    theUrl = "https://api.blockcypher.com/v1/btc/test3/txs/" + txId + "?limit=500";
+    theUrl = 'https://api.blockcypher.com/v1/btc/test3/txs/' + txId + '?limit=500';
   }
 
-  return request({ url: theUrl }).then(function (data) {
+  return promisifiedRequests.request({ url: theUrl }).then(function (data) {
     var txData = JSON.parse(data);
 
     var blockHash = txData.block_hash;
@@ -8454,12 +8467,12 @@ var txrefToTxid = function txrefToTxid(txref) {
     var chain = blockLocation.chain;
     var theUrl;
     if (chain === CHAIN_MAINNET) {
-      theUrl = "https://api.blockcypher.com/v1/btc/main/blocks/" + blockHeight + "?txstart=" + blockIndex + "&limit=1";
+      theUrl = 'https://api.blockcypher.com/v1/btc/main/blocks/' + blockHeight + '?txstart=' + blockIndex + '&limit=1';
     } else {
-      theUrl = "https://api.blockcypher.com/v1/btc/test3/blocks/" + blockHeight + "?txstart=" + blockIndex + "&limit=1";
+      theUrl = 'https://api.blockcypher.com/v1/btc/test3/blocks/' + blockHeight + '?txstart=' + blockIndex + '&limit=1';
     }
 
-    request({ url: theUrl }).then(function (data) {
+    promisifiedRequests.request({ url: theUrl }).then(function (data) {
       var txData = JSON.parse(data);
       resolve(txData.txids[0]);
     }, function (error) {
@@ -8496,5 +8509,5 @@ txrefToTxid("tx1-rk63-uvxf-9pqc-sy")
   });
 */
 
-},{"./bech32":1,"xmlhttprequest":39}]},{},[41])(41)
+},{"./bech32":1,"./promisifiedRequests":41}]},{},[42])(42)
 });
