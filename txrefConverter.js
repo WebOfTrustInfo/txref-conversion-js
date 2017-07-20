@@ -266,11 +266,6 @@ module.exports = {
   promisifiedRequest: promisifiedRequests.request
 };
 
-txDetailsFromTxid("f8cdaff3ebd9e862ed5885f8975489090595abe1470397f79780ead1c7528107", "testnet").then( result => {
-   console.log(result);
- });
-
-
 /*
 txrefToTxid("tx1-rk63-uvxf-9pqc-sy")
   .then(result => {
@@ -278,4 +273,10 @@ txrefToTxid("tx1-rk63-uvxf-9pqc-sy")
   }, error => {
     console.error(error);
   });
-*/
+
+txDetailsFromTxid("f8cdaff3ebd9e862ed5885f8975489090595abe1470397f79780ead1c7528107", "testnet").then( result => {
+ console.log(result);
+ });
+
+
+ */
