@@ -289,7 +289,9 @@ describe('Bech32 TX', function () {
       setTimeout(function () {
         txrefConverter.txrefToTxid("txtest1-xyv2-xzyq-qqm5-tyke")
           .then(result => {
-            expect(result).to.equal("f8cdaff3ebd9e862ed5885f8975489090595abe1470397f79780ead1c7528107");
+            expect(result.txid).to.equal("f8cdaff3ebd9e862ed5885f8975489090595abe1470397f79780ead1c7528107");
+            expect(result.chain).to.equal(txrefConverter.CHAIN_TESTNET);
+
             done();
           }, error => {
             console.error(error);
@@ -302,7 +304,8 @@ describe('Bech32 TX', function () {
       setTimeout(function () {
         txrefConverter.txrefToTxid("tx1-rk63-uvxf-9pqc-sy")
           .then(result => {
-            expect(result).to.equal("016b71d9ec62709656504f1282bb81f7acf998df025e54bd68ea33129d8a425b");
+            expect(result.txid).to.equal("016b71d9ec62709656504f1282bb81f7acf998df025e54bd68ea33129d8a425b");
+            expect(result.chain).to.equal(txrefConverter.CHAIN_MAINNET);
             done();
           }, error => {
             console.error(error);

@@ -114,47 +114,56 @@ var txrefDecode = function (bech32Tx) {
     "blockIndex": blockIndex,
     "chain": chain
   };
-}
+};
 
-function getTxDetails(txId, chain) {
+var parseTxDetails = function (txData, chain, txid) {
+  let blockHash = txData.block_hash;
+  let blockHeight = txData.block_height;
+  let blockIndex = txData.block_index;
+  let fees = txData.fees;
+  let inputs = txData.inputs.map((x) => {
+    return {"script": x.script, "addresses": x.addresses, "outputValue": x.output_value, "previousHash": x.prev_hash};
+  });
+  let outputs = txData.outputs.map((x) => {
+    if (x.value === 0) {
+      return {
+        "script": x.script,
+        "dataHex": x.data_hex,
+        "dataString": x.data_string,
+        "outputValue": x.value,
+        "scriptType": x.script_type
+      };
+    }
+    return {"script": x.script, "addresses": x.addresses, "outputValue": x.value, "scriptType": x.script_type};
+  });
+  return {
+    "blockHash": blockHash,
+    "blockHeight": blockHeight,
+    "blockIndex": blockIndex,
+    "txReceived": txData.received,
+    "txConfirmed": txData.confirmed,
+    "numConfirmations": txData.confirmations,
+    "inputs": inputs,
+    "outputs": outputs,
+    "chain": chain,
+    "fees": fees,
+    "txHash": txid
+  };
+};
+
+function getTxDetails(txid, chain) {
 
   var theUrl;
   if (chain === CHAIN_MAINNET) {
-    theUrl = `https://api.blockcypher.com/v1/btc/main/txs/${txId}?limit=500`;
+    theUrl = `https://api.blockcypher.com/v1/btc/main/txs/${txid}?limit=500`;
   } else {
-    theUrl = `https://api.blockcypher.com/v1/btc/test3/txs/${txId}?limit=500`;
+    theUrl = `https://api.blockcypher.com/v1/btc/test3/txs/${txid}?limit=500`;
   }
 
   return promisifiedRequests.request({url: theUrl})
     .then(data => {
       let txData = JSON.parse(data);
-
-      let blockHash = txData.block_hash;
-      let blockHeight = txData.block_height;
-      let blockIndex = txData.block_index;
-      let fees = txData.fees;
-      let inputs = txData.inputs.map((x) => {
-        return {"script": x.script, "addresses": x.addresses, "outputValue": x.output_value, "previousHash": x.prev_hash};
-      });
-      let outputs = txData.outputs.map((x) => {
-        if (x.value === 0) {
-          return {"script": x.script, "dataHex": x.data_hex, "dataString": x.data_string, "outputValue": x.value, "scriptType": x.script_type};
-        }
-        return {"script": x.script, "addresses": x.addresses, "outputValue": x.value, "scriptType": x.script_type};
-      });
-      return {
-        "blockHash": blockHash,
-        "blockHeight": blockHeight,
-        "blockIndex": blockIndex,
-        "txReceived": txData.received,
-        "txConfirmed": txData.confirmed,
-        "numConfirmations": txData.confirmations,
-        "inputs": inputs,
-        "outputs": outputs,
-        "chain": chain,
-        "fees": fees,
-        "txHash": txId
-      };
+      return parseTxDetails(txData, chain, txid);
     }, error => {
       console.error(error);
       throw error;
@@ -162,8 +171,8 @@ function getTxDetails(txId, chain) {
 }
 
 
-var txidToTxref = function (txId, chain) {
-  return getTxDetails(txId, chain)
+var txidToTxref = function (txid, chain) {
+  return getTxDetails(txid, chain)
     .then(data => {
       var result = txrefEncode(chain, data.blockHeight, data.blockIndex);
       return result
@@ -175,7 +184,6 @@ var txidToTxref = function (txId, chain) {
 
 
 var txrefToTxid = function (txref) {
-
   return new Promise((resolve, reject) => {
 
     let blockLocation = txrefDecode(txref);
@@ -196,14 +204,50 @@ var txrefToTxid = function (txref) {
     promisifiedRequests.request({url: theUrl})
       .then(data => {
         let txData = JSON.parse(data);
-        resolve(txData.txids[0]);
+        resolve({
+            "txid": txData.txids[0],
+            "chain": chain
+          });
       }, error => {
         console.error(error);
         reject(error);
-      });
+      })
   });
-}
+};
 
+var txDetailsFromTxid = function (txid, chain) {
+  return getTxDetails(txid, chain)
+    .then(txDetails => {
+      var txref = txrefEncode(chain, txDetails.blockHeight, txDetails.blockIndex);
+      txDetails.txref = txref;
+      txDetails.chain = chain;
+      return txDetails;
+    }, error => {
+      console.error(error);
+      throw error;
+    });
+};
+
+var txDetailsFromTxref = function (txref) {
+  return txrefToTxid(txref)
+    .then(results => {
+      let txid = results.txid;
+      let chain = results.chain;
+      return getTxDetails(txid, chain)
+        .then(txDetails => {
+          // add other info
+          txDetails.txref = txref;
+          txDetails.chain = chain;
+          resolve(txDetails);
+        }, error => {
+          console.error(error);
+          reject(error);
+        });
+    }, error => {
+      console.error(error);
+      reject(error);
+    })
+};
 
 module.exports = {
   txrefDecode: txrefDecode,
@@ -211,6 +255,8 @@ module.exports = {
   txidToTxref: txidToTxref,
   txrefToTxid: txrefToTxid,
   getTxDetails: getTxDetails,
+  txDetailsFromTxid: txDetailsFromTxid,
+  txDetailsFromTxref: txDetailsFromTxref,
   MAGIC_BTC_MAINNET: MAGIC_BTC_MAINNET,
   MAGIC_BTC_TESTNET: MAGIC_BTC_TESTNET,
   TXREF_BECH32_HRP_MAINNET: TXREF_BECH32_HRP_MAINNET,
@@ -220,7 +266,7 @@ module.exports = {
   promisifiedRequest: promisifiedRequests.request
 };
 
- getTxDetails("f8cdaff3ebd9e862ed5885f8975489090595abe1470397f79780ead1c7528107", "testnet").then( result => {
+txDetailsFromTxid("f8cdaff3ebd9e862ed5885f8975489090595abe1470397f79780ead1c7528107", "testnet").then( result => {
    console.log(result);
  });
 
