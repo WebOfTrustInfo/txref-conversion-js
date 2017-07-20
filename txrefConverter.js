@@ -238,7 +238,7 @@ var txDetailsFromTxref = function (txref) {
           // add other info
           txDetails.txref = txref;
           txDetails.chain = chain;
-          resolve(txDetails);
+          return txDetails;
         }, error => {
           console.error(error);
           reject(error);
