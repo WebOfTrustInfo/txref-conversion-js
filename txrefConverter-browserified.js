@@ -8399,52 +8399,61 @@ var txrefDecode = function txrefDecode(bech32Tx) {
   };
 };
 
-function getTxDetails(txId, chain) {
+var parseTxDetails = function parseTxDetails(txData, chain, txid) {
+  var blockHash = txData.block_hash;
+  var blockHeight = txData.block_height;
+  var blockIndex = txData.block_index;
+  var fees = txData.fees;
+  var inputs = txData.inputs.map(function (x) {
+    return { "script": x.script, "addresses": x.addresses, "outputValue": x.output_value, "previousHash": x.prev_hash };
+  });
+  var outputs = txData.outputs.map(function (x) {
+    if (x.value === 0) {
+      return {
+        "script": x.script,
+        "dataHex": x.data_hex,
+        "dataString": x.data_string,
+        "outputValue": x.value,
+        "scriptType": x.script_type
+      };
+    }
+    return { "script": x.script, "addresses": x.addresses, "outputValue": x.value, "scriptType": x.script_type };
+  });
+  return {
+    "blockHash": blockHash,
+    "blockHeight": blockHeight,
+    "blockIndex": blockIndex,
+    "txReceived": txData.received,
+    "txConfirmed": txData.confirmed,
+    "numConfirmations": txData.confirmations,
+    "inputs": inputs,
+    "outputs": outputs,
+    "chain": chain,
+    "fees": fees,
+    "txHash": txid
+  };
+};
+
+function getTxDetails(txid, chain) {
 
   var theUrl;
   if (chain === CHAIN_MAINNET) {
-    theUrl = 'https://api.blockcypher.com/v1/btc/main/txs/' + txId + '?limit=500';
+    theUrl = 'https://api.blockcypher.com/v1/btc/main/txs/' + txid + '?limit=500';
   } else {
-    theUrl = 'https://api.blockcypher.com/v1/btc/test3/txs/' + txId + '?limit=500';
+    theUrl = 'https://api.blockcypher.com/v1/btc/test3/txs/' + txid + '?limit=500';
   }
 
   return promisifiedRequests.request({ url: theUrl }).then(function (data) {
     var txData = JSON.parse(data);
-
-    var blockHash = txData.block_hash;
-    var blockHeight = txData.block_height;
-    var blockIndex = txData.block_index;
-    var fees = txData.fees;
-    var inputs = txData.inputs.map(function (x) {
-      return { "script": x.script, "addresses": x.addresses, "outputValue": x.output_value, "previousHash": x.prev_hash };
-    });
-    var outputs = txData.outputs.map(function (x) {
-      if (x.value === 0) {
-        return { "script": x.script, "dataHex": x.data_hex, "dataString": x.data_string, "outputValue": x.value, "scriptType": x.script_type };
-      }
-      return { "script": x.script, "addresses": x.addresses, "outputValue": x.value, "scriptType": x.script_type };
-    });
-    return {
-      "blockHash": blockHash,
-      "blockHeight": blockHeight,
-      "blockIndex": blockIndex,
-      "txReceived": txData.received,
-      "txConfirmed": txData.confirmed,
-      "numConfirmations": txData.confirmations,
-      "inputs": inputs,
-      "outputs": outputs,
-      "chain": chain,
-      "fees": fees,
-      "txHash": txId
-    };
+    return parseTxDetails(txData, chain, txid);
   }, function (error) {
     console.error(error);
     throw error;
   });
 }
 
-var txidToTxref = function txidToTxref(txId, chain) {
-  return getTxDetails(txId, chain).then(function (data) {
+var txidToTxref = function txidToTxref(txid, chain) {
+  return getTxDetails(txid, chain).then(function (data) {
     var result = txrefEncode(chain, data.blockHeight, data.blockIndex);
     return result;
   }, function (error) {
@@ -8454,7 +8463,6 @@ var txidToTxref = function txidToTxref(txId, chain) {
 };
 
 var txrefToTxid = function txrefToTxid(txref) {
-
   return new Promise(function (resolve, reject) {
 
     var blockLocation = txrefDecode(txref);
@@ -8474,11 +8482,47 @@ var txrefToTxid = function txrefToTxid(txref) {
 
     promisifiedRequests.request({ url: theUrl }).then(function (data) {
       var txData = JSON.parse(data);
-      resolve(txData.txids[0]);
+      resolve({
+        "txid": txData.txids[0],
+        "chain": chain
+      });
     }, function (error) {
       console.error(error);
       reject(error);
     });
+  });
+};
+
+var txDetailsFromTxid = function txDetailsFromTxid(txid, chain) {
+  return getTxDetails(txid, chain).then(function (txDetails) {
+    var txref = txrefEncode(chain, txDetails.blockHeight, txDetails.blockIndex);
+    txDetails.txid = txid;
+    txDetails.txref = txref;
+    txDetails.chain = chain;
+    return txDetails;
+  }, function (error) {
+    console.error(error);
+    throw error;
+  });
+};
+
+var txDetailsFromTxref = function txDetailsFromTxref(txref) {
+  return txrefToTxid(txref).then(function (results) {
+    var txid = results.txid;
+    var chain = results.chain;
+    return getTxDetails(txid, chain).then(function (txDetails) {
+      // add other info
+      txDetails.txid = txid;
+      txDetails.txref = txref;
+      txDetails.chain = chain;
+      return txDetails;
+    }, function (error) {
+      console.error(error);
+      throw error;
+    });
+  }, function (error) {
+    console.error(error);
+    throw error;
   });
 };
 
@@ -8488,17 +8532,16 @@ module.exports = {
   txidToTxref: txidToTxref,
   txrefToTxid: txrefToTxid,
   getTxDetails: getTxDetails,
+  txDetailsFromTxid: txDetailsFromTxid,
+  txDetailsFromTxref: txDetailsFromTxref,
   MAGIC_BTC_MAINNET: MAGIC_BTC_MAINNET,
   MAGIC_BTC_TESTNET: MAGIC_BTC_TESTNET,
   TXREF_BECH32_HRP_MAINNET: TXREF_BECH32_HRP_MAINNET,
   TXREF_BECH32_HRP_TESTNET: TXREF_BECH32_HRP_TESTNET,
   CHAIN_MAINNET: CHAIN_MAINNET,
-  CHAIN_TESTNET: CHAIN_TESTNET
+  CHAIN_TESTNET: CHAIN_TESTNET,
+  promisifiedRequest: promisifiedRequests.request
 };
-
-getTxDetails("f8cdaff3ebd9e862ed5885f8975489090595abe1470397f79780ead1c7528107", "testnet").then(function (result) {
-  console.log(result);
-});
 
 /*
 txrefToTxid("tx1-rk63-uvxf-9pqc-sy")
@@ -8507,7 +8550,13 @@ txrefToTxid("tx1-rk63-uvxf-9pqc-sy")
   }, error => {
     console.error(error);
   });
-*/
+
+txDetailsFromTxid("f8cdaff3ebd9e862ed5885f8975489090595abe1470397f79780ead1c7528107", "testnet").then( result => {
+ console.log(result);
+ });
+
+
+ */
 
 },{"./bech32":1,"./promisifiedRequests":41}]},{},[42])(42)
 });

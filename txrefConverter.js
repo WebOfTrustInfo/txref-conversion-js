@@ -243,11 +243,11 @@ var txDetailsFromTxref = function (txref) {
           return txDetails;
         }, error => {
           console.error(error);
-          reject(error);
+          throw error;
         });
     }, error => {
       console.error(error);
-      reject(error);
+      throw error;
     })
 };
 
