@@ -8283,6 +8283,7 @@ var request = function request(obj) {
     request.open(obj.method || "GET", obj.url);
     request.responseType = "json";
     if (obj.body !== null) {
+      request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
       request.send(JSON.stringify(obj.body));
     } else {
       request.send();
@@ -8551,12 +8552,9 @@ txrefToTxid("tx1-rk63-uvxf-9pqc-sy")
     console.error(error);
   });
 
-txDetailsFromTxid("f8cdaff3ebd9e862ed5885f8975489090595abe1470397f79780ead1c7528107", "testnet").then( result => {
+txDetailsFromTxid("2960626c1c538ef120743753d834dd493361177edea2985caf1a678f690e0029", "testnet").then( result => {
  console.log(result);
- });
-
-
- */
+ });*/
 
 },{"./bech32":1,"./promisifiedRequests":41}]},{},[42])(42)
 });

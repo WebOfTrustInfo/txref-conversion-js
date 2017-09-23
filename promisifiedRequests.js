@@ -19,6 +19,7 @@ let request = obj => {
     request.open(obj.method || "GET", obj.url);
     request.responseType = "json";
     if (obj.body !== null) {
+      request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
       request.send(JSON.stringify(obj.body));
     } else {
       request.send();
