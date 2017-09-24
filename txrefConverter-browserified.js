@@ -8282,7 +8282,7 @@ var request = function request(obj) {
 
     request.open(obj.method || "GET", obj.url);
     request.responseType = "json";
-    if (obj.body !== null) {
+    if (obj.body) {
       request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
       request.send(JSON.stringify(obj.body));
     } else {
