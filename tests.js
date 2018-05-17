@@ -266,7 +266,7 @@ describe('Bech32 TX', function () {
       let blockHeight = 0;
       let txPos = 0;
       let utxoIndex = 0;
-      let result = txrefConverter.txrefextEncode(txrefConverter.CHAIN_MAINNET, blockHeight, txPos, utxoIndex);
+      let result = txrefConverter.txrefEncode(txrefConverter.CHAIN_MAINNET, blockHeight, txPos, utxoIndex);
       expect(result).to.equal('tx1-rqqq-qqqq-qqqu-au7hl');
       done();
     });
@@ -275,7 +275,7 @@ describe('Bech32 TX', function () {
       let blockHeight = 0;
       let txPos = 0;
       let utxoIndex = 100;
-      let result = txrefConverter.txrefextEncode(txrefConverter.CHAIN_MAINNET, blockHeight, txPos, utxoIndex);
+      let result = txrefConverter.txrefEncode(txrefConverter.CHAIN_MAINNET, blockHeight, txPos, utxoIndex);
       expect(result).to.equal('tx1-rqqq-qqqq-yrq9-mqh4w');
       done();
     });
@@ -284,7 +284,7 @@ describe('Bech32 TX', function () {
       let blockHeight = 0;
       let txPos = 0;
       let utxoIndex = 0x1FFF;
-      let result = txrefConverter.txrefextEncode(txrefConverter.CHAIN_MAINNET, blockHeight, txPos, utxoIndex);
+      let result = txrefConverter.txrefEncode(txrefConverter.CHAIN_MAINNET, blockHeight, txPos, utxoIndex);
       expect(result).to.equal('tx1-rqqq-qqqq-ll8t-emcac');
       done();
     });
@@ -293,7 +293,7 @@ describe('Bech32 TX', function () {
       let blockHeight = 0;
       let txPos = 0x1FFF;
       let utxoIndex = 0;
-      let result = txrefConverter.txrefextEncode(txrefConverter.CHAIN_MAINNET, blockHeight, txPos, utxoIndex);
+      let result = txrefConverter.txrefEncode(txrefConverter.CHAIN_MAINNET, blockHeight, txPos, utxoIndex);
       expect(result).to.equal('tx1-rqqq-qull-qqq5-ktx95');
       done();
     });
@@ -302,7 +302,7 @@ describe('Bech32 TX', function () {
       let blockHeight = 0;
       let txPos = 0x1FFF;
       let utxoIndex = 100;
-      let result = txrefConverter.txrefextEncode(txrefConverter.CHAIN_MAINNET, blockHeight, txPos, utxoIndex);
+      let result = txrefConverter.txrefEncode(txrefConverter.CHAIN_MAINNET, blockHeight, txPos, utxoIndex);
       expect(result).to.equal('tx1-rqqq-qull-yrqd-sh089');
       done();
     });
@@ -311,7 +311,7 @@ describe('Bech32 TX', function () {
       let blockHeight = 0x1FFFFF;
       let txPos = 0;
       let utxoIndex = 0;
-      let result = txrefConverter.txrefextEncode(txrefConverter.CHAIN_MAINNET, blockHeight, txPos, utxoIndex);
+      let result = txrefConverter.txrefEncode(txrefConverter.CHAIN_MAINNET, blockHeight, txPos, utxoIndex);
       expect(result).to.equal('tx1-r7ll-lrqq-qqqm-m5vjv');
       done();
     });
@@ -320,7 +320,7 @@ describe('Bech32 TX', function () {
       let blockHeight = 0x1FFFFF;
       let txPos = 0x1FFF;
       let utxoIndex = 0;
-      let result = txrefConverter.txrefextEncode(txrefConverter.CHAIN_MAINNET, blockHeight, txPos, utxoIndex);
+      let result = txrefConverter.txrefEncode(txrefConverter.CHAIN_MAINNET, blockHeight, txPos, utxoIndex);
       expect(result).to.equal('tx1-r7ll-llll-qqqn-sr5q8');
       done();
     });
@@ -329,7 +329,7 @@ describe('Bech32 TX', function () {
       let blockHeight = 0x1FFFFF;
       let txPos = 0x1FFF;
       let utxoIndex = 100;
-      let result = txrefConverter.txrefextEncode(txrefConverter.CHAIN_MAINNET, blockHeight, txPos, utxoIndex);
+      let result = txrefConverter.txrefEncode(txrefConverter.CHAIN_MAINNET, blockHeight, txPos, utxoIndex);
       expect(result).to.equal('tx1-r7ll-llll-yrq2-klazk');
       done();
     });
@@ -341,7 +341,7 @@ describe('Bech32 TX', function () {
       let txPos = 0;
       let utxoIndex = 0;
 
-      let result = txrefConverter.txrefextDecode('tx1-rqqq-qqqq-qqqu-au7hl');
+      let result = txrefConverter.txrefDecode('tx1-rqqq-qqqq-qqqu-au7hl');
       expect(result.blockHeight).to.equal(blockHeight);
       expect(result.blockIndex).to.equal(txPos);
       expect(result.utxoIndex).to.equal(utxoIndex);
@@ -354,7 +354,7 @@ describe('Bech32 TX', function () {
       let txPos = 0;
       let utxoIndex = 100;
 
-      let result = txrefConverter.txrefextDecode('tx1-rqqq-qqqq-yrq9-mqh4w');
+      let result = txrefConverter.txrefDecode('tx1-rqqq-qqqq-yrq9-mqh4w');
       expect(result.blockHeight).to.equal(blockHeight);
       expect(result.blockIndex).to.equal(txPos);
       expect(result.utxoIndex).to.equal(utxoIndex);
@@ -367,7 +367,7 @@ describe('Bech32 TX', function () {
       let txPos = 0;
       let utxoIndex = 0x1FFF;
 
-      let result = txrefConverter.txrefextDecode('tx1-rqqq-qqqq-ll8t-emcac');
+      let result = txrefConverter.txrefDecode('tx1-rqqq-qqqq-ll8t-emcac');
       expect(result.blockHeight).to.equal(blockHeight);
       expect(result.blockIndex).to.equal(txPos);
       expect(result.utxoIndex).to.equal(utxoIndex);
@@ -380,8 +380,7 @@ describe('Bech32 TX', function () {
       let txPos = 0x1FFF;
       let utxoIndex = 0;
 
-      let result =
-      txrefConverter.txrefextDecode('tx1-rqqq-qull-qqq5-ktx95');
+      let result = txrefConverter.txrefDecode('tx1-rqqq-qull-qqq5-ktx95');
       expect(result.blockHeight).to.equal(blockHeight);
       expect(result.blockIndex).to.equal(txPos);
       expect(result.utxoIndex).to.equal(utxoIndex);
@@ -394,8 +393,7 @@ describe('Bech32 TX', function () {
       let txPos = 0x1FFF;
       let utxoIndex = 100;
 
-      let result =
-      txrefConverter.txrefextDecode('tx1-rqqq-qull-yrqd-sh089');
+      let result = txrefConverter.txrefDecode('tx1-rqqq-qull-yrqd-sh089');
       expect(result.blockHeight).to.equal(blockHeight);
       expect(result.blockIndex).to.equal(txPos);
       expect(result.utxoIndex).to.equal(utxoIndex);
@@ -408,8 +406,7 @@ describe('Bech32 TX', function () {
       let txPos = 0;
       let utxoIndex = 0;
 
-      let result =
-      txrefConverter.txrefextDecode('tx1-r7ll-lrqq-qqqm-m5vjv');
+      let result = txrefConverter.txrefDecode('tx1-r7ll-lrqq-qqqm-m5vjv');
       expect(result.blockHeight).to.equal(blockHeight);
       expect(result.blockIndex).to.equal(txPos);
       expect(result.utxoIndex).to.equal(utxoIndex);
@@ -422,8 +419,7 @@ describe('Bech32 TX', function () {
       let txPos = 0x1FFF;
       let utxoIndex = 0;
 
-      let result =
-      txrefConverter.txrefextDecode('tx1-r7ll-llll-qqqn-sr5q8');
+      let result = txrefConverter.txrefDecode('tx1-r7ll-llll-qqqn-sr5q8');
       expect(result.blockHeight).to.equal(blockHeight);
       expect(result.blockIndex).to.equal(txPos);
       expect(result.utxoIndex).to.equal(utxoIndex);
@@ -436,8 +432,7 @@ describe('Bech32 TX', function () {
       let txPos = 0x1FFF;
       let utxoIndex = 100;
 
-      let result =
-      txrefConverter.txrefextDecode('tx1-r7ll-llll-yrq2-klazk');
+      let result = txrefConverter.txrefDecode('tx1-r7ll-llll-yrq2-klazk');
       expect(result.blockHeight).to.equal(blockHeight);
       expect(result.blockIndex).to.equal(txPos);
       expect(result.utxoIndex).to.equal(utxoIndex);
