@@ -143,12 +143,12 @@ var txrefDecode = function (bech32Tx) {
   return {
     "blockHeight": blockHeight,
     "blockIndex": blockIndex,
-    "utxoIndex": utxoIndex,
-    "chain": chain
+    "chain": chain,
+    "utxoIndex": utxoIndex
   };
 };
 
-var parseTxDetails = function (txData, chain, txid) {
+var parseTxDetails = function (txData, chain, txid, utxoIndex) {
   let blockHash = txData.block_hash;
   let blockHeight = txData.block_height;
   let blockIndex = txData.block_index;
@@ -179,11 +179,12 @@ var parseTxDetails = function (txData, chain, txid) {
     "outputs": outputs,
     "chain": chain,
     "fees": fees,
-    "txHash": txid
+    "txHash": txid,
+    "utxoIndex": utxoIndex
   };
 };
 
-function getTxDetails(txid, chain) {
+function getTxDetails(txid, chain, utxoIndex) {
 
   var theUrl;
   if (chain === CHAIN_MAINNET) {
@@ -195,7 +196,7 @@ function getTxDetails(txid, chain) {
   return promisifiedRequests.request({url: theUrl})
     .then(data => {
       let txData = JSON.parse(data);
-      return parseTxDetails(txData, chain, txid);
+      return parseTxDetails(txData, chain, txid, utxoIndex);
     }, error => {
       console.error(error);
       throw error;
@@ -203,10 +204,10 @@ function getTxDetails(txid, chain) {
 }
 
 
-var txidToTxref = function (txid, chain) {
-  return getTxDetails(txid, chain)
+var txidToTxref = function (txid, chain, utxoIndex) {
+  return getTxDetails(txid, chain, utxoIndex)
     .then(data => {
-      var result = txrefEncode(chain, data.blockHeight, data.blockIndex);
+      var result = txrefEncode(chain, data.blockHeight, data.blockIndex, data.utxoIndex);
       return result
     }, error => {
       console.error(error);
@@ -238,7 +239,8 @@ var txrefToTxid = function (txref) {
         let txData = JSON.parse(data);
         resolve({
             "txid": txData.txids[0],
-            "chain": chain
+            "chain": chain,
+            "utxoIndex": blockLocation.utxoIndex
           });
       }, error => {
         console.error(error);
@@ -247,13 +249,14 @@ var txrefToTxid = function (txref) {
   });
 };
 
-var txDetailsFromTxid = function (txid, chain) {
-  return getTxDetails(txid, chain)
+var txDetailsFromTxid = function (txid, chain, utxoIndex) {
+  return getTxDetails(txid, chain, utxoIndex)
     .then(txDetails => {
-      var txref = txrefEncode(chain, txDetails.blockHeight, txDetails.blockIndex);
+      var txref = txrefEncode(chain, txDetails.blockHeight, txDetails.blockIndex, utxoIndex);
       txDetails.txid = txid;
       txDetails.txref = txref;
       txDetails.chain = chain;
+      txDetails.utxoIndex = utxoIndex;
       return txDetails;
     }, error => {
       console.error(error);
@@ -266,12 +269,14 @@ var txDetailsFromTxref = function (txref) {
     .then(results => {
       let txid = results.txid;
       let chain = results.chain;
-      return getTxDetails(txid, chain)
+      let utxoIndex = results.utxoIndex;
+      return getTxDetails(txid, chain, utxoIndex)
         .then(txDetails => {
           // add other info
           txDetails.txid = txid;
           txDetails.txref = txref;
           txDetails.chain = chain;
+          txDetails.utxoIndex = utxoIndex;
           return txDetails;
         }, error => {
           console.error(error);
@@ -308,7 +313,8 @@ txrefToTxid("tx1-rk63-uvxf-9pqc-sy")
     console.error(error);
   });
 
-txDetailsFromTxid("2960626c1c538ef120743753d834dd493361177edea2985caf1a678f690e0029", "testnet").then( result => {
+
+txDetailsFromTxid("2960626c1c538ef120743753d834dd493361177edea2985caf1a678f690e0029", "testnet", 1).then( result => {
  console.log(result);
  });*/
 

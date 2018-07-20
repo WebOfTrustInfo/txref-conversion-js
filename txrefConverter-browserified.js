@@ -8549,12 +8549,12 @@ var txrefDecode = function txrefDecode(bech32Tx) {
   return {
     "blockHeight": blockHeight,
     "blockIndex": blockIndex,
-    "utxoIndex": utxoIndex,
-    "chain": chain
+    "chain": chain,
+    "utxoIndex": utxoIndex
   };
 };
 
-var parseTxDetails = function parseTxDetails(txData, chain, txid) {
+var parseTxDetails = function parseTxDetails(txData, chain, txid, utxoIndex) {
   var blockHash = txData.block_hash;
   var blockHeight = txData.block_height;
   var blockIndex = txData.block_index;
@@ -8585,11 +8585,12 @@ var parseTxDetails = function parseTxDetails(txData, chain, txid) {
     "outputs": outputs,
     "chain": chain,
     "fees": fees,
-    "txHash": txid
+    "txHash": txid,
+    "utxoIndex": utxoIndex
   };
 };
 
-function getTxDetails(txid, chain) {
+function getTxDetails(txid, chain, utxoIndex) {
 
   var theUrl;
   if (chain === CHAIN_MAINNET) {
@@ -8600,16 +8601,16 @@ function getTxDetails(txid, chain) {
 
   return promisifiedRequests.request({ url: theUrl }).then(function (data) {
     var txData = JSON.parse(data);
-    return parseTxDetails(txData, chain, txid);
+    return parseTxDetails(txData, chain, txid, utxoIndex);
   }, function (error) {
     console.error(error);
     throw error;
   });
 }
 
-var txidToTxref = function txidToTxref(txid, chain) {
-  return getTxDetails(txid, chain).then(function (data) {
-    var result = txrefEncode(chain, data.blockHeight, data.blockIndex);
+var txidToTxref = function txidToTxref(txid, chain, utxoIndex) {
+  return getTxDetails(txid, chain, utxoIndex).then(function (data) {
+    var result = txrefEncode(chain, data.blockHeight, data.blockIndex, data.utxoIndex);
     return result;
   }, function (error) {
     console.error(error);
@@ -8639,7 +8640,8 @@ var txrefToTxid = function txrefToTxid(txref) {
       var txData = JSON.parse(data);
       resolve({
         "txid": txData.txids[0],
-        "chain": chain
+        "chain": chain,
+        "utxoIndex": blockLocation.utxoIndex
       });
     }, function (error) {
       console.error(error);
@@ -8648,12 +8650,13 @@ var txrefToTxid = function txrefToTxid(txref) {
   });
 };
 
-var txDetailsFromTxid = function txDetailsFromTxid(txid, chain) {
-  return getTxDetails(txid, chain).then(function (txDetails) {
-    var txref = txrefEncode(chain, txDetails.blockHeight, txDetails.blockIndex);
+var txDetailsFromTxid = function txDetailsFromTxid(txid, chain, utxoIndex) {
+  return getTxDetails(txid, chain, utxoIndex).then(function (txDetails) {
+    var txref = txrefEncode(chain, txDetails.blockHeight, txDetails.blockIndex, utxoIndex);
     txDetails.txid = txid;
     txDetails.txref = txref;
     txDetails.chain = chain;
+    txDetails.utxoIndex = utxoIndex;
     return txDetails;
   }, function (error) {
     console.error(error);
@@ -8665,11 +8668,13 @@ var txDetailsFromTxref = function txDetailsFromTxref(txref) {
   return txrefToTxid(txref).then(function (results) {
     var txid = results.txid;
     var chain = results.chain;
-    return getTxDetails(txid, chain).then(function (txDetails) {
+    var utxoIndex = results.utxoIndex;
+    return getTxDetails(txid, chain, utxoIndex).then(function (txDetails) {
       // add other info
       txDetails.txid = txid;
       txDetails.txref = txref;
       txDetails.chain = chain;
+      txDetails.utxoIndex = utxoIndex;
       return txDetails;
     }, function (error) {
       console.error(error);
@@ -8706,7 +8711,8 @@ txrefToTxid("tx1-rk63-uvxf-9pqc-sy")
     console.error(error);
   });
 
-txDetailsFromTxid("2960626c1c538ef120743753d834dd493361177edea2985caf1a678f690e0029", "testnet").then( result => {
+
+txDetailsFromTxid("2960626c1c538ef120743753d834dd493361177edea2985caf1a678f690e0029", "testnet", 1).then( result => {
  console.log(result);
  });*/
 
