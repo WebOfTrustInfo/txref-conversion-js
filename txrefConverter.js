@@ -2,7 +2,9 @@ var bech32 = require('./bech32');
 var promisifiedRequests = require('./promisifiedRequests');
 
 let MAGIC_BTC_MAINNET = 0x03;
+let MAGIC_BTC_MAINNET_EXTENDED = 0x04;
 let MAGIC_BTC_TESTNET = 0x06;
+let MAGIC_BTC_TESTNET_EXTENDED = 0x07;
 
 let TXREF_BECH32_HRP_MAINNET = "tx";
 let TXREF_BECH32_HRP_TESTNET = "txtest";
@@ -13,31 +15,29 @@ let CHAIN_TESTNET = "testnet";
 
 
 var txrefEncode = function (chain, blockHeight, txPos, utxoIndex) {
-  let magic = chain === CHAIN_MAINNET ? MAGIC_BTC_MAINNET : MAGIC_BTC_TESTNET;
   let prefix = chain === CHAIN_MAINNET ? TXREF_BECH32_HRP_MAINNET : TXREF_BECH32_HRP_TESTNET;
   let nonStandard = chain != CHAIN_MAINNET;
   let extendedTxref = utxoIndex !== undefined;
 
-  var shortId;
+  var magic;
   if(extendedTxref) {
-    shortId = nonStandard ?
-      [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00] : // 13
-      [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]; // 11
+    magic = chain === CHAIN_MAINNET ? MAGIC_BTC_MAINNET_EXTENDED : MAGIC_BTC_TESTNET_EXTENDED;
   } else {
-    shortId = nonStandard ? 
-      [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00] : // 10
-      [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]; // 8
+    magic = chain === CHAIN_MAINNET ? MAGIC_BTC_MAINNET : MAGIC_BTC_TESTNET;
   }
 
-  if (
-    (nonStandard && (blockHeight > 0x1FFFFF || txPos > 0x1FFF || magic > 0x1F))
-    ||
-    (nonStandard && (blockHeight > 0x3FFFFFF || txPos > 0x3FFFF || magic > 0x1F))
-  ) {
+  var shortId;
+  if(extendedTxref) {
+    shortId = [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]; // 12
+  } else {
+    shortId = [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]; // 9
+  }
+
+  if (blockHeight > 0xFFFFFF || txPos > 0x7FFF || magic > 0x1F) {
     return null;
   }
 
-  if(extendedTxref && utxoIndex > 0x1FFF) {
+  if(extendedTxref && utxoIndex > 0x7FFF) {
       return null;
   } 
 
@@ -51,47 +51,39 @@ var txrefEncode = function (chain, blockHeight, txPos, utxoIndex) {
   shortId[2] |= ((blockHeight & 0x1F0) >> 4);
   shortId[3] |= ((blockHeight & 0x3E00) >> 9);
   shortId[4] |= ((blockHeight & 0x7C000) >> 14);
+  shortId[5] |= ((blockHeight & 0xF80000) >> 19);
 
-  if (nonStandard) {
-    // use extended blockheight (up to 0x3FFFFFF)
-    // use extended txpos (up to 0x3FFFF)
-    shortId[5] |= ((blockHeight & 0xF80000) >> 19);
-    shortId[6] |= ((blockHeight & 0x3000000) >> 24);
+  shortId[6] |=  (txPos & 0x1F);
+  shortId[7] |= ((txPos & 0x3E0) >> 5);
+  shortId[8] |= ((txPos & 0x7C00) >> 10);
 
-    shortId[6] |= ((txPos & 0x7) << 2);
-    shortId[7] |= ((txPos & 0xF8) >> 3);
-    shortId[8] |= ((txPos & 0x1F00) >> 8);
-    shortId[9] |= ((txPos & 0x3E000) >> 13);
-    if(extendedTxref) {
-      shortId[10] |= ((utxoIndex & 0x1F));
-      shortId[11] |= ((utxoIndex & 0x3E0) >> 5);
-      shortId[12] |= ((utxoIndex & 0x1C00) >> 10);
-    }
-  } else {
-    shortId[5] |= ((blockHeight & 0x180000) >> 19);
-    shortId[5] |= ((txPos & 0x7) << 2);
-    shortId[6] |= ((txPos & 0xF8) >> 3);
-    shortId[7] |= ((txPos & 0x1F00) >> 8);
-    if(extendedTxref) {
-      shortId[8] |= ((utxoIndex & 0x1F));
-      shortId[9] |= ((utxoIndex & 0x3E0) >> 5);
-      shortId[10] |= ((utxoIndex & 0x1C00) >> 10);
-    }
+  if(extendedTxref) {
+    shortId[9]  |=  (utxoIndex & 0x1F);
+    shortId[10] |= ((utxoIndex & 0x3E0) >> 5);
+    shortId[11] |= ((utxoIndex & 0x7C00) >> 10);
   }
 
   let result = bech32.encode(prefix, shortId);
 
+  let origLength = result.length;
   let breakIndex = prefix.length + 1;
-  let finalResult = result.substring(0, breakIndex) + "-" +
+  let finalResult = result.substring(0, breakIndex) + ":" +
     result.substring(breakIndex, breakIndex + 4) + "-" +
     result.substring(breakIndex + 4, breakIndex + 8) + "-" +
-    result.substring(breakIndex + 8, breakIndex + 12) + "-" +
-    result.substring(breakIndex + 12, result.length);
+    result.substring(breakIndex + 8, breakIndex + 12) + "-";
+  if(origLength-breakIndex < 16) {
+    finalResult += result.substring(breakIndex + 12, result.length);
+  } else {
+    finalResult += result.substring(breakIndex + 12, breakIndex + 16) + "-" +
+      result.substring(breakIndex + 16, result.length);
+  }
+
   return finalResult;
 };
 
 var txrefDecode = function (bech32Tx) {
   let stripped = bech32Tx.replace(/-/g, '');
+  stripped = stripped.replace(/:/g, '');
 
   let result = bech32.decode(stripped);
   if (result === null) {
@@ -99,46 +91,36 @@ var txrefDecode = function (bech32Tx) {
   }
   let buf = result.data;
 
-  let extendedTxref = buf.length == 11 || buf.length == 13;
+  let extendedTxref = buf.length == 12;
 
   let chainMarker = buf[0];
-  let nonStandard = chainMarker != MAGIC_BTC_MAINNET;
-
-  var bStart = (buf[1] >> 1) |
-    (buf[2] << 4) |
-    (buf[3] << 9) |
-    (buf[4] << 14);
 
   var blockHeight = 0;
   var blockIndex = 0;
   var utxoIndex = 0;
 
-  if (nonStandard) {
-    blockHeight = bStart | (buf[5] << 19);
-    blockHeight |= ((buf[6] & 0x03) << 24);
+  blockHeight = (buf[1] >> 1);
+  blockHeight |= (buf[2] << 4);
+  blockHeight |= (buf[3] << 9);
+  blockHeight |= (buf[4] << 14);
+  blockHeight |= (buf[5] << 19);
 
-    blockIndex = (buf[6] & 0x1C) >> 2;
-    blockIndex |= (buf[7] << 3);
-    blockIndex |= (buf[8] << 8);
-    blockIndex |= (buf[9] << 13);
-    if(extendedTxref) {
-      utxoIndex = buf[10];
-      utxoIndex |= (buf[11] << 5);
-      utxoIndex |= (buf[12] << 10);
-    }
-  } else {
-    blockHeight = bStart | ((buf[5] & 0x03) << 19);
-    blockIndex = (buf[5] & 0x1C) >> 2;
-    blockIndex |= (buf[6] << 3);
-    blockIndex |= (buf[7] << 8);
-    if(extendedTxref) {
-      utxoIndex = buf[8];
-      utxoIndex |= (buf[9] << 5);
-      utxoIndex |= (buf[10] << 10);
-    }
+  blockIndex = buf[6];
+  blockIndex |= (buf[7] << 5);
+  blockIndex |= (buf[8] << 10);
+
+  if(extendedTxref) {
+    utxoIndex = buf[9];
+    utxoIndex |= (buf[10] << 5);
+    utxoIndex |= (buf[11] << 10);
   }
 
-  let chain = chainMarker === MAGIC_BTC_MAINNET ? CHAIN_MAINNET : CHAIN_TESTNET;
+  var chain;
+  if(chainMarker === MAGIC_BTC_MAINNET || chainMarker === MAGIC_BTC_MAINNET_EXTENDED) {
+      chain = CHAIN_MAINNET;
+  } else {
+      chain = CHAIN_TESTNET;
+  }
 
   return {
     "blockHeight": blockHeight,

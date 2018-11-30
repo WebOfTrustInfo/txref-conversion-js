@@ -24,7 +24,7 @@ This library is for prototype use only. Some future improvements would include:
 - Flexible accessor if a local bitcoin node is available.
 - Robust error checking
 
-You can use this as a node package or in a browser. The browserified script is available as `btcr_converter.js`.
+You can use this as a node package or in a browser. The browserified script is available as `txrefConverter-browserified.js`.
 
 ## Preview
 
@@ -35,7 +35,6 @@ You can experiment with this library in the [BTCR TX Playground](https://weboftr
 
 In these examples, note the following:
 - Prefixes: mainnet tx refs start with the `tx1` prefix, whereas testnet tx refs start with "txtest1"
-- Length: ignoring the prefixes, testnet refs are 2 characters longer than mainnet
 
 ### Convert a TXID to a TX ref
 
@@ -45,7 +44,7 @@ let txrefConverter = require('./txrefConverter');
 txrefConverter.txidToTxref("016b71d9ec62709656504f1282bb81f7acf998df025e54bd68ea33129d8a425b", 
     txrefConverter.CHAIN_MAINNET)
   .then(result => {
-    console.log(result); // expect "tx1-rk63-uvxf-9pqc-sy"
+    console.log(result); // expect "tx1:rk63-uqnf-zscg-527"
   });
   
 ```
@@ -55,7 +54,7 @@ txrefConverter.txidToTxref("016b71d9ec62709656504f1282bb81f7acf998df025e54bd68ea
 ```
 let txrefConverter = require('./txrefConverter');
 
-txrefConverter.txrefToTxid("txtest1-xyv2-xzyq-qqm5-tyke")
+txrefConverter.txrefToTxid("txtest1:xyv2-xzpq-q9wa-p7t")
   .then(result => {
     console.log(result); // expect "f8cdaff3ebd9e862ed5885f8975489090595abe1470397f79780ead1c7528107"
   });
@@ -71,11 +70,8 @@ Mainnet:
 ```
 let txrefConverter = require('./txrefConverter');
 
-let result = txrefConverter.txrefDecode('tx1-rzqq-qqqq-uvlj-ez');
-console.log(result.blockHeight); // expect 1
-console.log(result.blockIndex);  // expect 0
-console.log(result.chain);       // expect "mainnet"
-
+let result = txrefConverter.txrefEncode("mainnet", 0, 0);
+console.log(result); // expect "tx1:rqqq-qqqq-qmhu-qhp"
 ```
 
 Testnet:
@@ -84,7 +80,7 @@ Testnet:
 let txrefConverter = require('./txrefConverter');
 
 let result = txrefConverter.txrefEncode("testnet", 1152194, 1);
-console.log(result); // expect "txtest1-xyv2-xzyq-qqm5-tyke"
+console.log(result); // expect "txtest1:xyv2-xzpq-q9wa-p7t"
 ```
 
 #### Given a TX ref, extract the chain, block height and position
@@ -92,8 +88,11 @@ console.log(result); // expect "txtest1-xyv2-xzyq-qqm5-tyke"
 ```
 let txrefConverter = require('./txrefConverter');
 
-let result = txrefConverter.txrefEncode("mainnet", 0, 0);
-console.log(result); // expect "tx1-rqqq-qqqq-qmhu-qk"
+let result = txrefConverter.txrefDecode('tx1:rzqq-qqqq-qgqu-t84');
+console.log(result.blockHeight); // expect 1
+console.log(result.blockIndex);  // expect 0
+console.log(result.chain);       // expect "mainnet"
+
 ```
 
 #### Get transaction details
@@ -122,14 +121,14 @@ npm install
 ```
 ## Using in a browser
 
-`npm run build` generates the browserified script `btcr_converter.js`, which you can include in your web project.
+`npm run build` generates the browserified script `txrefConverter-browserified.js`, which you can include in your web project.
 
 The following shows how you can use it: 
 
 ```
-<script src="./btcr_converter-browserified.js"></script>
+<script src="./txrefConverter-browserified.js"></script>
 
-BtcrUtils.txidToTxref(txid, chain)
+txrefConverter.txidToTxref(txid, chain)
   .then(function (result, err) {
       // populate widget with result
 });
