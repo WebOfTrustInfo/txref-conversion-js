@@ -13,7 +13,7 @@ describe('Bech32 TX', function () {
       let blockHeight = 0;
       let txPos = 0;
       let result = txrefConverter.txrefEncode(txrefConverter.CHAIN_MAINNET, blockHeight, txPos);
-      expect(result).to.equal('tx1-rqqq-qqqq-qmhu-qk');
+      expect(result).to.equal('tx1:rqqq-qqqq-qmhu-qhp');
       done();
     });
 
@@ -21,7 +21,7 @@ describe('Bech32 TX', function () {
       let blockHeight = 1;
       let txPos = 0;
       let result = txrefConverter.txrefEncode(txrefConverter.CHAIN_MAINNET, blockHeight, txPos);
-      expect(result).to.equal('tx1-rzqq-qqqq-uvlj-ez');
+      expect(result).to.equal('tx1:rzqq-qqqq-qgqu-t84');
       done();
     });
 
@@ -29,7 +29,7 @@ describe('Bech32 TX', function () {
       let blockHeight = 2097151;
       let txPos = 1000;
       let result = txrefConverter.txrefEncode(txrefConverter.CHAIN_MAINNET, blockHeight, txPos);
-      expect(result).to.equal('tx1-r7ll-lrar-a27h-kt');
+      expect(result).to.equal('tx1:r7ll-lrgl-qqsy-mff');
       done();
     });
 
@@ -37,7 +37,7 @@ describe('Bech32 TX', function () {
       let blockHeight = 2097151;
       let txPos = 8191;
       let result = txrefConverter.txrefEncode(txrefConverter.CHAIN_MAINNET, blockHeight, txPos);
-      expect(result).to.equal('tx1-r7ll-llll-khym-tq');
+      expect(result).to.equal('tx1:r7ll-lrll-8xwc-yjp');
       done();
     });
 
@@ -45,7 +45,7 @@ describe('Bech32 TX', function () {
       let blockHeight = 2097151;
       let txPos = 0;
       let result = txrefConverter.txrefEncode(txrefConverter.CHAIN_MAINNET, blockHeight, txPos);
-      expect(result).to.equal('tx1-r7ll-lrqq-vq5e-gg');
+      expect(result).to.equal('tx1:r7ll-lrqq-q32l-zcx');
       done();
     });
 
@@ -53,7 +53,7 @@ describe('Bech32 TX', function () {
       let blockHeight = 0;
       let txPos = 8191;
       let result = txrefConverter.txrefEncode(txrefConverter.CHAIN_MAINNET, blockHeight, txPos);
-      expect(result).to.equal('tx1-rqqq-qull-6v87-r7');
+      expect(result).to.equal('tx1:rqqq-qqll-8vnm-xax');
       done();
     });
 
@@ -61,7 +61,7 @@ describe('Bech32 TX', function () {
       let blockHeight = 467883;
       let txPos = 2355;
       let result = txrefConverter.txrefEncode(txrefConverter.CHAIN_MAINNET, blockHeight, txPos);
-      expect(result).to.equal('tx1-rk63-uvxf-9pqc-sy');
+      expect(result).to.equal('tx1:rk63-uqnf-zscg-527');
       done();
     });
 
@@ -69,7 +69,7 @@ describe('Bech32 TX', function () {
       let blockHeight = 0x1FFFFF;
       let txPos = 0x00;
       let result = txrefConverter.txrefEncode(txrefConverter.CHAIN_MAINNET, blockHeight, txPos);
-      expect(result).to.equal("tx1-r7ll-lrqq-vq5e-gg");
+      expect(result).to.equal("tx1:r7ll-lrqq-q32l-zcx");
       done();
     });
 
@@ -77,7 +77,7 @@ describe('Bech32 TX', function () {
       let blockHeight = 0x71F69;
       let txPos = 0x89D;
       let result = txrefConverter.txrefEncode(txrefConverter.CHAIN_MAINNET, blockHeight, txPos);
-      expect(result).to.equal("tx1-rjk0-u5ng-4jsf-mc");
+      expect(result).to.equal("tx1:rjk0-uqay-zsrw-hqe");
       done();
     });
 
@@ -85,7 +85,7 @@ describe('Bech32 TX', function () {
       let blockHeight = 466793;
       let txPos = 2205;
       let result = txrefConverter.txrefEncode(txrefConverter.CHAIN_MAINNET, blockHeight, txPos);
-      expect(result).to.equal("tx1-rjk0-u5ng-4jsf-mc");
+      expect(result).to.equal("tx1:rjk0-uqay-zsrw-hqe");
       done();
     });
 
@@ -93,7 +93,7 @@ describe('Bech32 TX', function () {
       let blockHeight = 467883;
       let txPos = 2355;
       let result = txrefConverter.txrefEncode(txrefConverter.CHAIN_TESTNET, blockHeight, txPos);
-      expect(result).to.equal("txtest1-xk63-uqvx-fqx8-xqr8");
+      expect(result).to.equal("txtest1:xk63-uqnf-zasf-wgq");
       done();
     });
 
@@ -101,7 +101,7 @@ describe('Bech32 TX', function () {
       let blockHeight = 0;
       let txPos = 0;
       let result = txrefConverter.txrefEncode(txrefConverter.CHAIN_TESTNET, blockHeight, txPos);
-      expect(result).to.equal("txtest1-xqqq-qqqq-qqkn-3gh9");
+      expect(result).to.equal("txtest1:xqqq-qqqq-qkla-64l");
       done();
     });
 
@@ -109,62 +109,62 @@ describe('Bech32 TX', function () {
       let blockHeight = 1152194;
       let txPos = 1;
       let result = txrefConverter.txrefEncode(txrefConverter.CHAIN_TESTNET, blockHeight, txPos);
-      expect(result).to.equal("txtest1-xyv2-xzyq-qqm5-tyke");
+      expect(result).to.equal("txtest1:xyv2-xzpq-q9wa-p7t");
       done();
     });
     //  txid: f8cdaff3ebd9e862ed5885f8975489090595abe1470397f79780ead1c7528107
   });
 
   describe('decode', function () {
-    it('decodes tx ref tx1-rqqq-qqqq-qmhu-qk', function (done) {
+    it('decodes tx ref tx1:rqqq-qqqq-qmhu-qhp', function (done) {
       let blockHeight = 0;
       let txPos = 0;
 
-      let result = txrefConverter.txrefDecode('tx1-rqqq-qqqq-qmhu-qk');
+      let result = txrefConverter.txrefDecode('tx1:rqqq-qqqq-qmhu-qhp');
       expect(result.blockHeight).to.equal(blockHeight);
       expect(result.blockIndex).to.equal(txPos);
       expect(result.chain).to.equal(txrefConverter.CHAIN_MAINNET);
       done();
     });
 
-    it('decodes tx ref tx1-rzqq-qqqq-uvlj-ez', function (done) {
+    it('decodes tx ref tx1:rzqq-qqqq-qgqu-t84', function (done) {
       let blockHeight = 1;
       let txPos = 0;
 
-      let result = txrefConverter.txrefDecode('tx1-rzqq-qqqq-uvlj-ez');
+      let result = txrefConverter.txrefDecode('tx1:rzqq-qqqq-qgqu-t84');
       expect(result.blockHeight).to.equal(blockHeight);
       expect(result.blockIndex).to.equal(txPos);
       expect(result.chain).to.equal(txrefConverter.CHAIN_MAINNET);
       done();
     });
 
-    it('decodes tx ref tx1-r7ll-lrar-a27h-kt', function (done) {
+    it('decodes tx ref tx1:r7ll-lrgl-qqsy-mff', function (done) {
       let blockHeight = 2097151;
       let txPos = 1000;
 
-      let result = txrefConverter.txrefDecode('tx1-r7ll-lrar-a27h-kt');
+      let result = txrefConverter.txrefDecode('tx1:r7ll-lrgl-qqsy-mff');
       expect(result.blockHeight).to.equal(blockHeight);
       expect(result.blockIndex).to.equal(txPos);
       expect(result.chain).to.equal(txrefConverter.CHAIN_MAINNET);
       done();
     });
 
-    it('decodes tx ref tx1-r7ll-llll-khym-tq', function (done) {
+    it('decodes tx ref tx1:r7ll-lrll-8xwc-yjp', function (done) {
       let blockHeight = 2097151;
       let txPos = 8191;
 
-      let result = txrefConverter.txrefDecode('tx1-r7ll-llll-khym-tq');
+      let result = txrefConverter.txrefDecode('tx1:r7ll-lrll-8xwc-yjp');
       expect(result.blockHeight).to.equal(blockHeight);
       expect(result.blockIndex).to.equal(txPos);
       expect(result.chain).to.equal(txrefConverter.CHAIN_MAINNET);
       done();
     });
 
-    it('decodes txref tx1-r7ll-lrqq-vq5e-gg', function (done) {
+    it('decodes txref tx1:r7ll-lrqq-q32l-zcx', function (done) {
       let blockHeight = 2097151;
       let txPos = 0;
 
-      let result = txrefConverter.txrefDecode('tx1-r7ll-lrqq-vq5e-gg');
+      let result = txrefConverter.txrefDecode('tx1:r7ll-lrqq-q32l-zcx');
       expect(result.blockHeight).to.equal(blockHeight);
       expect(result.blockIndex).to.equal(txPos);
       expect(result.chain).to.equal(txrefConverter.CHAIN_MAINNET);
@@ -172,87 +172,87 @@ describe('Bech32 TX', function () {
       done();
     });
 
-    it('decodes tx ref tx1-rqqq-qull-6v87-r7', function (done) {
+    it('decodes tx ref tx1:rqqq-qqll-8vnm-xax', function (done) {
       let blockHeight = 0;
       let txPos = 8191;
 
-      let result = txrefConverter.txrefDecode('tx1-rqqq-qull-6v87-r7');
+      let result = txrefConverter.txrefDecode('tx1:rqqq-qqll-8vnm-xax');
       expect(result.blockHeight).to.equal(blockHeight);
       expect(result.blockIndex).to.equal(txPos);
       expect(result.chain).to.equal(txrefConverter.CHAIN_MAINNET);
       done();
     });
 
-    it('decodes tx ref tx1-rk63-uvxf-9pqc-sy', function (done) {
+    it('decodes tx ref tx1:rk63-uqnf-zscg-527', function (done) {
       let blockHeight = 467883;
       let txPos = 2355;
-      let result = txrefConverter.txrefDecode('tx1-rk63-uvxf-9pqc-sy');
+      let result = txrefConverter.txrefDecode('tx1:rk63-uqnf-zscg-527');
       expect(result.blockHeight).to.equal(blockHeight);
       expect(result.blockIndex).to.equal(txPos);
       expect(result.chain).to.equal(txrefConverter.CHAIN_MAINNET);
       done();
     });
 
-    it('decodes tx ref tx1-r7ll-lrqq-vq5e-gg', function (done) {
+    it('decodes tx ref tx1:r7ll-lrqq-q32l-zcx', function (done) {
       let blockHeight = 0x1FFFFF;
       let txPos = 0x00;
 
-      let result = txrefConverter.txrefDecode('tx1-r7ll-lrqq-vq5e-gg');
+      let result = txrefConverter.txrefDecode('tx1:r7ll-lrqq-q32l-zcx');
       expect(result.blockHeight).to.equal(blockHeight);
       expect(result.blockIndex).to.equal(txPos);
       expect(result.chain).to.equal(txrefConverter.CHAIN_MAINNET);
       done();
     });
 
-    it('decodes tx ref tx1-rjk0-u5ng-4jsf-mc', function (done) {
+    it('decodes tx ref tx1:rjk0-uqay-zsrw-hqe', function (done) {
       let blockHeight = 0x71F69;
       let txPos = 0x89D;
 
-      let result = txrefConverter.txrefDecode('tx1-rjk0-u5ng-4jsf-mc');
+      let result = txrefConverter.txrefDecode('tx1:rjk0-uqay-zsrw-hqe');
       expect(result.blockHeight).to.equal(blockHeight);
       expect(result.blockIndex).to.equal(txPos);
       expect(result.chain).to.equal(txrefConverter.CHAIN_MAINNET);
       done();
     });
 
-    it('decodes tx ref', function (done) {
+    it('decodes tx ref tx1:rjk0-uqay-zsrw-hqe', function (done) {
       let blockHeight = 466793;
       let txPos = 2205;
 
-      let result = txrefConverter.txrefDecode('tx1-rjk0-u5ng-4jsf-mc');
+      let result = txrefConverter.txrefDecode('tx1:rjk0-uqay-zsrw-hqe');
       expect(result.blockHeight).to.equal(blockHeight);
       expect(result.blockIndex).to.equal(txPos);
       expect(result.chain).to.equal(txrefConverter.CHAIN_MAINNET);
       done();
     });
 
-    it('decodes tx ref txtest1-xk63-uqvx-fqx8-xqr8', function (done) {
+    it('decodes tx ref txtest1:xk63-uqnf-zasf-wgq', function (done) {
       let blockHeight = 467883;
       let txPos = 2355;
 
-      let result = txrefConverter.txrefDecode('txtest1-xk63-uqvx-fqx8-xqr8');
+      let result = txrefConverter.txrefDecode('txtest1:xk63-uqnf-zasf-wgq');
       expect(result.blockHeight).to.equal(blockHeight);
       expect(result.blockIndex).to.equal(txPos);
       expect(result.chain).to.equal(txrefConverter.CHAIN_TESTNET);
       done();
     });
 
-    it('decodes tx ref txtest1-xqqq-qqqq-qqkn-3gh9', function (done) {
+    it('decodes tx ref txtest1:xqqq-qqqq-qkla-64l', function (done) {
       let blockHeight = 0;
       let txPos = 0;
 
-      let result = txrefConverter.txrefDecode('txtest1-xqqq-qqqq-qqkn-3gh9');
+      let result = txrefConverter.txrefDecode('txtest1:xqqq-qqqq-qkla-64l');
       expect(result.blockHeight).to.equal(blockHeight);
       expect(result.blockIndex).to.equal(txPos);
       expect(result.chain).to.equal(txrefConverter.CHAIN_TESTNET);
       done();
     });
 
-    it('decodes tx ref txtest1-xyv2-xzyq-qqm5-tyke', function (done) {
+    it('decodes tx ref txtest1:xyv2-xzpq-q9wa-p7t', function (done) {
       let blockHeight = 1152194;
       let txPos = 1;
 
-      let result = txrefConverter.txrefDecode('txtest1-xyv2-xzyq-qqm5-tyke');
+      let result = txrefConverter.txrefDecode('txtest1:xyv2-xzpq-q9wa-p7t');
       expect(result.blockHeight).to.equal(blockHeight);
       expect(result.blockIndex).to.equal(txPos);
       expect(result.chain).to.equal(txrefConverter.CHAIN_TESTNET);
@@ -267,7 +267,7 @@ describe('Bech32 TX', function () {
       let txPos = 0;
       let utxoIndex = 0;
       let result = txrefConverter.txrefEncode(txrefConverter.CHAIN_MAINNET, blockHeight, txPos, utxoIndex);
-      expect(result).to.equal('tx1-rqqq-qqqq-qqqu-au7hl');
+      expect(result).to.equal('tx1:yqqq-qqqq-qqqq-ksvh-26');
       done();
     });
     
@@ -276,7 +276,7 @@ describe('Bech32 TX', function () {
       let txPos = 0;
       let utxoIndex = 100;
       let result = txrefConverter.txrefEncode(txrefConverter.CHAIN_MAINNET, blockHeight, txPos, utxoIndex);
-      expect(result).to.equal('tx1-rqqq-qqqq-yrq9-mqh4w');
+      expect(result).to.equal('tx1:yqqq-qqqq-qyrq-0ks7-gt');
       done();
     });
     
@@ -285,7 +285,7 @@ describe('Bech32 TX', function () {
       let txPos = 0;
       let utxoIndex = 0x1FFF;
       let result = txrefConverter.txrefEncode(txrefConverter.CHAIN_MAINNET, blockHeight, txPos, utxoIndex);
-      expect(result).to.equal('tx1-rqqq-qqqq-ll8t-emcac');
+      expect(result).to.equal('tx1:yqqq-qqqq-qll8-p5t3-qa');
       done();
     });
     
@@ -294,7 +294,7 @@ describe('Bech32 TX', function () {
       let txPos = 0x1FFF;
       let utxoIndex = 0;
       let result = txrefConverter.txrefEncode(txrefConverter.CHAIN_MAINNET, blockHeight, txPos, utxoIndex);
-      expect(result).to.equal('tx1-rqqq-qull-qqq5-ktx95');
+      expect(result).to.equal('tx1:yqqq-qqll-8qqq-rtzm-52');
       done();
     });
     
@@ -303,7 +303,7 @@ describe('Bech32 TX', function () {
       let txPos = 0x1FFF;
       let utxoIndex = 100;
       let result = txrefConverter.txrefEncode(txrefConverter.CHAIN_MAINNET, blockHeight, txPos, utxoIndex);
-      expect(result).to.equal('tx1-rqqq-qull-yrqd-sh089');
+      expect(result).to.equal('tx1:yqqq-qqll-8yrq-6d7j-km');
       done();
     });
     
@@ -312,7 +312,7 @@ describe('Bech32 TX', function () {
       let txPos = 0;
       let utxoIndex = 0;
       let result = txrefConverter.txrefEncode(txrefConverter.CHAIN_MAINNET, blockHeight, txPos, utxoIndex);
-      expect(result).to.equal('tx1-r7ll-lrqq-qqqm-m5vjv');
+      expect(result).to.equal('tx1:y7ll-lrqq-qqqq-3pfz-cl');
       done();
     });
     
@@ -321,7 +321,7 @@ describe('Bech32 TX', function () {
       let txPos = 0x1FFF;
       let utxoIndex = 0;
       let result = txrefConverter.txrefEncode(txrefConverter.CHAIN_MAINNET, blockHeight, txPos, utxoIndex);
-      expect(result).to.equal('tx1-r7ll-llll-qqqn-sr5q8');
+      expect(result).to.equal('tx1:y7ll-lrll-8qqq-y68w-x0');
       done();
     });
     
@@ -330,18 +330,18 @@ describe('Bech32 TX', function () {
       let txPos = 0x1FFF;
       let utxoIndex = 100;
       let result = txrefConverter.txrefEncode(txrefConverter.CHAIN_MAINNET, blockHeight, txPos, utxoIndex);
-      expect(result).to.equal('tx1-r7ll-llll-yrq2-klazk');
+      expect(result).to.equal('tx1:y7ll-lrll-8yrq-aum8-y7');
       done();
     });
   });
 
   describe('decode extended', function () {
-    it('decodes txef-ext tx1-rqqq-qqqq-qqqu-au7hl', function (done) {
+    it('decodes txef-ext tx1:yqqq-qqqq-qqqq-ksvh-26', function (done) {
       let blockHeight = 0;
       let txPos = 0;
       let utxoIndex = 0;
 
-      let result = txrefConverter.txrefDecode('tx1-rqqq-qqqq-qqqu-au7hl');
+      let result = txrefConverter.txrefDecode('tx1:yqqq-qqqq-qqqq-ksvh-26');
       expect(result.blockHeight).to.equal(blockHeight);
       expect(result.blockIndex).to.equal(txPos);
       expect(result.utxoIndex).to.equal(utxoIndex);
@@ -349,12 +349,12 @@ describe('Bech32 TX', function () {
       done();
     });
 
-    it('decodes txef-ext tx1-rqqq-qqqq-yrq9-mqh4w', function (done) {
+    it('decodes txef-ext tx1:yqqq-qqqq-qyrq-0ks7-gt', function (done) {
       let blockHeight = 0;
       let txPos = 0;
       let utxoIndex = 100;
 
-      let result = txrefConverter.txrefDecode('tx1-rqqq-qqqq-yrq9-mqh4w');
+      let result = txrefConverter.txrefDecode('tx1:yqqq-qqqq-qyrq-0ks7-gt');
       expect(result.blockHeight).to.equal(blockHeight);
       expect(result.blockIndex).to.equal(txPos);
       expect(result.utxoIndex).to.equal(utxoIndex);
@@ -362,12 +362,12 @@ describe('Bech32 TX', function () {
       done();
     });
 
-    it('decodes txef-ext tx1-rqqq-qqqq-ll8t-emcac', function (done) {
+    it('decodes txef-ext tx1:yqqq-qqqq-qll8-p5t3-qa', function (done) {
       let blockHeight = 0;
       let txPos = 0;
       let utxoIndex = 0x1FFF;
 
-      let result = txrefConverter.txrefDecode('tx1-rqqq-qqqq-ll8t-emcac');
+      let result = txrefConverter.txrefDecode('tx1:yqqq-qqqq-qll8-p5t3-qa');
       expect(result.blockHeight).to.equal(blockHeight);
       expect(result.blockIndex).to.equal(txPos);
       expect(result.utxoIndex).to.equal(utxoIndex);
@@ -375,12 +375,12 @@ describe('Bech32 TX', function () {
       done();
     });
 
-    it('decodes txef-ext tx1-rqqq-qull-qqq5-ktx95', function (done) {
+    it('decodes txef-ext tx1:yqqq-qqll-8qqq-rtzm-52', function (done) {
       let blockHeight = 0;
       let txPos = 0x1FFF;
       let utxoIndex = 0;
 
-      let result = txrefConverter.txrefDecode('tx1-rqqq-qull-qqq5-ktx95');
+      let result = txrefConverter.txrefDecode('tx1:yqqq-qqll-8qqq-rtzm-52');
       expect(result.blockHeight).to.equal(blockHeight);
       expect(result.blockIndex).to.equal(txPos);
       expect(result.utxoIndex).to.equal(utxoIndex);
@@ -388,12 +388,12 @@ describe('Bech32 TX', function () {
       done();
     });
 
-    it('decodes txef-ext tx1-rqqq-qull-yrqd-sh089', function (done) {
+    it('decodes txef-ext tx1:yqqq-qqll-8yrq-6d7j-km', function (done) {
       let blockHeight = 0;
       let txPos = 0x1FFF;
       let utxoIndex = 100;
 
-      let result = txrefConverter.txrefDecode('tx1-rqqq-qull-yrqd-sh089');
+      let result = txrefConverter.txrefDecode('tx1:yqqq-qqll-8yrq-6d7j-km');
       expect(result.blockHeight).to.equal(blockHeight);
       expect(result.blockIndex).to.equal(txPos);
       expect(result.utxoIndex).to.equal(utxoIndex);
@@ -401,12 +401,12 @@ describe('Bech32 TX', function () {
       done();
     });
   
-    it('decodes txef-ext tx1-r7ll-lrqq-qqqm-m5vjv', function (done) {
+    it('decodes txef-ext tx1:y7ll-lrqq-qqqq-3pfz-cl', function (done) {
       let blockHeight = 0x1FFFFF;
       let txPos = 0;
       let utxoIndex = 0;
 
-      let result = txrefConverter.txrefDecode('tx1-r7ll-lrqq-qqqm-m5vjv');
+      let result = txrefConverter.txrefDecode('tx1:y7ll-lrqq-qqqq-3pfz-cl');
       expect(result.blockHeight).to.equal(blockHeight);
       expect(result.blockIndex).to.equal(txPos);
       expect(result.utxoIndex).to.equal(utxoIndex);
@@ -414,12 +414,12 @@ describe('Bech32 TX', function () {
       done();
     });
 
-    it('decodes txef-ext tx1-r7ll-llll-qqqn-sr5q8', function (done) {
+    it('decodes txef-ext tx1:y7ll-lrll-8qqq-y68w-x0', function (done) {
       let blockHeight = 0x1FFFFF;
       let txPos = 0x1FFF;
       let utxoIndex = 0;
 
-      let result = txrefConverter.txrefDecode('tx1-r7ll-llll-qqqn-sr5q8');
+      let result = txrefConverter.txrefDecode('tx1:y7ll-lrll-8qqq-y68w-x0');
       expect(result.blockHeight).to.equal(blockHeight);
       expect(result.blockIndex).to.equal(txPos);
       expect(result.utxoIndex).to.equal(utxoIndex);
@@ -427,12 +427,12 @@ describe('Bech32 TX', function () {
       done();
     });
 
-    it('decodes txef-ext tx1-r7ll-llll-yrq2-klazk', function (done) {
+    it('decodes txef-ext tx1:y7ll-lrll-8yrq-aum8-y7', function (done) {
       let blockHeight = 0x1FFFFF;
       let txPos = 0x1FFF;
       let utxoIndex = 100;
 
-      let result = txrefConverter.txrefDecode('tx1-r7ll-llll-yrq2-klazk');
+      let result = txrefConverter.txrefDecode('tx1:y7ll-lrll-8yrq-aum8-y7');
       expect(result.blockHeight).to.equal(blockHeight);
       expect(result.blockIndex).to.equal(txPos);
       expect(result.utxoIndex).to.equal(utxoIndex);
@@ -447,7 +447,7 @@ describe('Bech32 TX', function () {
       setTimeout(function () {
         txrefConverter.txidToTxref("f8cdaff3ebd9e862ed5885f8975489090595abe1470397f79780ead1c7528107", "testnet")
           .then(result => {
-            expect(result).to.equal("txtest1-xyv2-xzyq-qqm5-tyke");
+            expect(result).to.equal("txtest1:xyv2-xzpq-q9wa-p7t");
             done();
           }, error => {
             console.error(error);
@@ -460,7 +460,7 @@ describe('Bech32 TX', function () {
       setTimeout(function () {
         txrefConverter.txidToTxref("016b71d9ec62709656504f1282bb81f7acf998df025e54bd68ea33129d8a425b", "mainnet")
           .then(result => {
-            expect(result).to.equal("tx1-rk63-uvxf-9pqc-sy");
+            expect(result).to.equal("tx1:rk63-uqnf-zscg-527");
             done();
           }, error => {
             console.error(error);
@@ -471,7 +471,7 @@ describe('Bech32 TX', function () {
 
     it('bech32 decode txid (testnet)', function (done) {
       setTimeout(function () {
-        txrefConverter.txrefToTxid("txtest1-xyv2-xzyq-qqm5-tyke")
+        txrefConverter.txrefToTxid("txtest1:xyv2-xzpq-q9wa-p7t")
           .then(result => {
             expect(result.txid).to.equal("f8cdaff3ebd9e862ed5885f8975489090595abe1470397f79780ead1c7528107");
             expect(result.chain).to.equal(txrefConverter.CHAIN_TESTNET);
@@ -486,7 +486,7 @@ describe('Bech32 TX', function () {
 
     it('bech32 decode txid (mainnet)', function (done) {
       setTimeout(function () {
-        txrefConverter.txrefToTxid("tx1-rk63-uvxf-9pqc-sy")
+        txrefConverter.txrefToTxid("tx1:rk63-uqnf-zscg-527")
           .then(result => {
             expect(result.txid).to.equal("016b71d9ec62709656504f1282bb81f7acf998df025e54bd68ea33129d8a425b");
             expect(result.chain).to.equal(txrefConverter.CHAIN_MAINNET);
