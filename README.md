@@ -1,20 +1,19 @@
-# TX Ref conversion javascript library
+# TXRef conversion javascript library
 
 ## About
 
 Javascript library for Bech32 Encoded TX References, ported from Jonas Schnelli's [reference implementation](https://github.com/jonasschnelli/bitcoin_txref_code) for the Rebooting Web Of Trust's [BTCR Hackathon](https://github.com/WebOfTrustInfo/btcr-hackathon). It uses Peter Wuille's [Bech32 library](https://github.com/sipa/bech32) for Bech32 encoding and decoding.
 
-See the current draft of the [Bech32 Encoded Transaction Position References](https://github.com/veleslavs/bips/blob/c83837536d6629f754ce5a88bbe245e0a615e76e/bip-XXXX-Bech32_Encoded_Transaction_Position_References.mediawiki) BIP. 
+For more details, see the [Bech32 Encoded Transaction Position References](https://github.com/bitcoin/bips/blob/master/bip-0136.mediawiki) BIP. 
 
 This implementation works as follows:
 
 - Encoding: 
   - Given a txid and chain (testnet/mainnet), fetch the block height and position from a blockchain explorer
   - Convert to a short id as shown in [btc_txref_encode](https://github.com/jonasschnelli/bitcoin_txref_code/blob/master/ref/c/txref_code.c)
-  - Encodes with the [javascript Bech32 library](https://github.com/sipa/bech32)
 
 - Decoding: 
-  - Decodes the bech32-encoded tx ref [javascript Bech32 library](https://github.com/sipa/bech32)
+  - Decodes the bech32-encoded txref 
   - Extracts the block height and position as shown in [btc_txref_decode](https://github.com/jonasschnelli/bitcoin_txref_code/blob/master/ref/c/txref_code.c)
   - Find the txid corresponding to the blockheight and position from a blockchain explorer
 
@@ -34,9 +33,9 @@ You can experiment with this library in the [BTCR TX Playground](https://weboftr
 ## Examples
 
 In these examples, note the following:
-- Prefixes: mainnet tx refs start with the `tx1` prefix, whereas testnet tx refs start with "txtest1"
+- Prefixes: mainnet tx refs start with the `tx1` prefix, whereas testnet tx refs start with `txtest1`
 
-### Convert a TXID to a TX ref
+### Convert a TXID to a TXref
 
 ```
 let txrefConverter = require('./txrefConverter');
@@ -49,7 +48,7 @@ txrefConverter.txidToTxref("016b71d9ec62709656504f1282bb81f7acf998df025e54bd68ea
   
 ```
 
-### Convert a TX ref to a TXID
+### Convert a TXref to a TXID
 
 ```
 let txrefConverter = require('./txrefConverter');
@@ -63,7 +62,7 @@ txrefConverter.txrefToTxid("txtest1:xyv2-xzpq-q9wa-p7t")
 
 ### Finer grained functions 
 
-#### Given the chain, block height and position, encode as a TX ref
+#### Given the chain, block height and position, encode as a TXref
 
 Mainnet:
 
@@ -83,7 +82,7 @@ let result = txrefConverter.txrefEncode("testnet", 1152194, 1);
 console.log(result); // expect "txtest1:xyv2-xzpq-q9wa-p7t"
 ```
 
-#### Given a TX ref, extract the chain, block height and position
+#### Given a TXref, extract the chain, block height and position
 
 ```
 let txrefConverter = require('./txrefConverter');
@@ -141,3 +140,4 @@ See the BTCR playground code repository [btcr-tx-playground](https://github.com/
 ```
 npm run test
 ```
+
