@@ -53,10 +53,20 @@ txrefConverter.txidToTxref("016b71d9ec62709656504f1282bb81f7acf998df025e54bd68ea
 ```
 let txrefConverter = require('./txrefConverter');
 
-txrefConverter.txrefToTxid("txtest1:xyv2-xzpq-q9wa-p7t")
+txrefToTxid("tx1:rk63-uqnf-zscg-527", "mainnet")
   .then(result => {
-    console.log(result); // expect "f8cdaff3ebd9e862ed5885f8975489090595abe1470397f79780ead1c7528107"
+    console.log(result)
   });
+
+```
+
+Expected output:
+```
+{
+  txid: '016b71d9ec62709656504f1282bb81f7acf998df025e54bd68ea33129d8a425b',
+  chain: 'mainnet',
+  utxoIndex: 0
+}
 
 ```
 
@@ -88,9 +98,9 @@ console.log(result); // expect "txtest1:xyv2-xzpq-q9wa-p7t"
 let txrefConverter = require('./txrefConverter');
 
 let result = txrefConverter.txrefDecode('tx1:rzqq-qqqq-qgqu-t84');
-console.log(result.blockHeight); // expect 1
-console.log(result.blockIndex);  // expect 0
-console.log(result.chain);       // expect "mainnet"
+console.log(result);
+
+// Expected: { blockHeight: 1, blockIndex: 0, chain: 'mainnet', utxoIndex: 0 }
 
 ```
 
@@ -104,7 +114,7 @@ let txrefConverter = require('./txrefConverter');
 getTxDetails("f8cdaff3ebd9e862ed5885f8975489090595abe1470397f79780ead1c7528107", "testnet")
     .then(data => {
       console.log(data.numConfirmations); // and other transaction data obtained from the explorer
-      var result = txrefEncode(chain, data.blockHeight, data.blockIndex);
+      var result = txrefEncode("testnet", data.blockHeight, data.blockIndex);
       return result
     }, error => {
       console.error(error);

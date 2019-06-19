@@ -8696,7 +8696,16 @@ module.exports = {
 };
 
 /*
-txrefToTxid("tx1-rk63-uvxf-9pqc-sy")
+let result = txrefEncode("mainnet", 0, 0);
+console.log(result);
+
+txidToTxref("016b71d9ec62709656504f1282bb81f7acf998df025e54bd68ea33129d8a425b",
+    "mainnet")
+    .then(result => {
+      console.log(result);
+    });
+
+txrefToTxid("tx1:rk63-uqnf-zscg-527", "mainnet")
   .then(result => {
     console.log(result);
   }, error => {
