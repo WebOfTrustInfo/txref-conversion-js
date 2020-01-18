@@ -20,6 +20,7 @@
 
 var CHARSET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
 var GENERATOR = [0x3b6a57b2, 0x26508e6d, 0x1ea119fa, 0x3d4233dd, 0x2a1462b3];
+var M = 0x3FFFFFFF;
 
 module.exports = {
   decode: decode,
@@ -55,12 +56,12 @@ function hrpExpand (hrp) {
 }
 
 function verifyChecksum (hrp, data) {
-  return polymod(hrpExpand(hrp).concat(data)) === 1;
+  return polymod(hrpExpand(hrp).concat(data)) === M;
 }
 
 function createChecksum (hrp, data) {
   var values = hrpExpand(hrp).concat(data).concat([0, 0, 0, 0, 0, 0]);
-  var mod = polymod(values) ^ 1;
+  var mod = polymod(values) ^ M;
   var ret = [];
   for (var p = 0; p < 6; ++p) {
     ret.push((mod >> 5 * (5 - p)) & 31);
