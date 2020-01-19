@@ -43,7 +43,7 @@ let txrefConverter = require('./txrefConverter');
 txrefConverter.txidToTxref("016b71d9ec62709656504f1282bb81f7acf998df025e54bd68ea33129d8a425b", 
     txrefConverter.CHAIN_MAINNET)
   .then(result => {
-    console.log(result); // expect "tx1:rk63-uqnf-zscg-527"
+    console.log(result); // expect "tx1:rk63-uqnf-z08h-t4q"
   });
   
 ```
@@ -53,7 +53,7 @@ txrefConverter.txidToTxref("016b71d9ec62709656504f1282bb81f7acf998df025e54bd68ea
 ```
 let txrefConverter = require('./txrefConverter');
 
-txrefToTxid("tx1:rk63-uqnf-zscg-527", "mainnet")
+txrefToTxid("tx1:rk63-uqnf-z08h-t4q", "mainnet")
   .then(result => {
     console.log(result)
   });
@@ -80,7 +80,7 @@ Mainnet:
 let txrefConverter = require('./txrefConverter');
 
 let result = txrefConverter.txrefEncode("mainnet", 0, 0);
-console.log(result); // expect "tx1:rqqq-qqqq-qmhu-qhp"
+console.log(result); // expect "tx1:rqqq-qqqq-qygr-lgl"
 ```
 
 Testnet:
@@ -89,7 +89,7 @@ Testnet:
 let txrefConverter = require('./txrefConverter');
 
 let result = txrefConverter.txrefEncode("testnet", 1152194, 1);
-console.log(result); // expect "txtest1:xyv2-xzpq-q9wa-p7t"
+console.log(result); // expect "txtest1:xyv2-xzpq-q63z-7p4"
 ```
 
 #### Given a TXref, extract the chain, block height and position
@@ -97,7 +97,7 @@ console.log(result); // expect "txtest1:xyv2-xzpq-q9wa-p7t"
 ```
 let txrefConverter = require('./txrefConverter');
 
-let result = txrefConverter.txrefDecode('tx1:rzqq-qqqq-qgqu-t84');
+let result = txrefConverter.txrefDecode('tx1:rzqq-qqqq-qhlr-5ct');
 console.log(result);
 
 // Expected: { blockHeight: 1, blockIndex: 0, chain: 'mainnet', utxoIndex: 0 }
