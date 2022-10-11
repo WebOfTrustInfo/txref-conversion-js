@@ -6,7 +6,7 @@
   "dependencies": {
     "buffer": "^5.0.1",
     "chai": "^3.5.0",
-    "jsonld": "^0.4.11",
+    "jsonld": "^8.1.0",
     "mocha": "^3.2.0",
     "verror": "^1.9.0",
     "xmlhttprequest": "^1.8.0"
